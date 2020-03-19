@@ -267,3 +267,5 @@ vanilla_stats.csv
 vc_hdrs.h
 vcache_non_blocking_stats.log
 
+# pytorch data dir
+data

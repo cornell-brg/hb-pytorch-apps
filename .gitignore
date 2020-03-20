@@ -269,3 +269,6 @@ vcache_non_blocking_stats.log
 
 # pytorch data dir
 data
+
+# pytorch trained model
+trained_model

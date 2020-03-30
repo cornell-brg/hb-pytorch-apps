@@ -108,7 +108,6 @@ if args.dry:
 # Training
 #-------------------------------------------------------------------------
 
-model.train()
 
 print('Training starting ...')
 
@@ -122,6 +121,10 @@ for epoch in range(args.nepoch):
   ###################
   # train the model #
   ###################
+
+  # prep model for *training*
+  model.train()
+
   for data, target in train_loader:
     # clear the gradients of all optimized variables
     optimizer.zero_grad()

@@ -109,7 +109,7 @@ print("Running inference ...")
 batch_counter = 0
 
 for data, target in test_loader:
-  if batch_counter > args.nbatch:
+  if batch_counter >= args.nbatch:
     break
   output_cpu = model_cpu(data.view(-1, 28*28))
   output_hb  = model(data.view(-1, 28*28).hammerblade())

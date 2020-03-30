@@ -19,6 +19,8 @@ import copy
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--nbatch', default=1, type=int,
                     help="number of batches to be tested")
+parser.add_argument("--verbosity", default=False, action='store_true',
+                    help="increase output verbosity")
 parser.add_argument("--print-internal", default=False, action='store_true',
                     help="print internal buffers")
 parser.add_argument("--dry", default=False, action='store_true',
@@ -107,12 +109,18 @@ print("Running inference ...")
 batch_counter = 0
 
 for data, target in test_loader:
+  if batch_counter > args.nbatch:
+    break
   output_cpu = model_cpu(data.view(-1, 28*28))
   output_hb  = model(data.view(-1, 28*28).hammerblade())
   assert output_hb.device == torch.device("hammerblade")
   assert torch.allclose(output_cpu, output_hb.cpu(), atol=1e-06)
+  if args.verbosity:
+    print("batch " + str(batch_counter))
+    print("output_cpu")
+    print(output_cpu)
+    print("output_hb")
+    print(output_hb)
   batch_counter += 1
-  if batch_counter > args.nbatch:
-    break
 
 print("done!")

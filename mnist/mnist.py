@@ -137,6 +137,9 @@ for epoch in range(args.nepoch):
       input_target = target
     # forward pass: compute predicted outputs by passing inputs to the model
     output = model(input_data)
+    if args.print_internal:
+      print("output")
+      print(output)
     # calculate the loss
     loss = criterion(output, input_target)
     # backward pass: compute gradient of the loss with respect to model parameters

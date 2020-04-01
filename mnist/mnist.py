@@ -11,6 +11,7 @@ from torchvision.datasets import MNIST
 import numpy as np
 import argparse
 import copy
+import time
 
 #-------------------------------------------------------------------------
 # Parse command line arguments
@@ -122,6 +123,9 @@ for epoch in range(args.nepoch):
   # train the model #
   ###################
 
+  # timer
+  start_time = time.time()
+
   # prep model for *training*
   model.train()
 
@@ -162,6 +166,7 @@ for epoch in range(args.nepoch):
     epoch+1,
     train_loss
   ))
+  print("--- %s seconds ---" % (time.time() - start_time))
 
   #-------------------------------------------------------------------------
 

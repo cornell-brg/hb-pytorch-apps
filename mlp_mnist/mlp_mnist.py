@@ -1,6 +1,10 @@
 #!/bin/python
 #=========================================================================
 # pytorch-mnist
+# adapted from
+# https://github.com/iam-mhaseeb/Multi-Layer-Perceptron-MNIST-with-PyTorch
+# https://medium.com/@aungkyawmyint_26195/multi-layer-perceptron-mnist-pytorch-463f795b897a
+# https://towardsdatascience.com/multi-layer-perceptron-usingfastai-and-pytorch-9e401dd288b8
 #=========================================================================
 
 import torch

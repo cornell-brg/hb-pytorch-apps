@@ -11,6 +11,7 @@ from torchvision.datasets import MNIST
 import numpy as np
 import argparse
 import copy
+import time
 
 #-------------------------------------------------------------------------
 # Parse command line arguments
@@ -106,6 +107,7 @@ if args.dry:
 
 print("Running inference ...")
 
+start_time = time.time()
 batch_counter = 0
 
 for data, target in test_loader:
@@ -124,3 +126,4 @@ for data, target in test_loader:
   batch_counter += 1
 
 print("done!")
+print("--- %s seconds ---" % (time.time() - start_time))

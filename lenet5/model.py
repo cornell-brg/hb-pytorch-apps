@@ -6,7 +6,7 @@ Small 5-layer CNN workload
 import torch
 import torch.nn as nn
 
-class model(nn.Module):
+class Network(nn.Module):
     """
     LeNet-5
 
@@ -14,7 +14,7 @@ class model(nn.Module):
     (Page 7)
     """
     def __init__(self):
-        super(LeNet5, self).__init__()
+        super(Network, self).__init__()
 
         self.conv = nn.Sequential(
             nn.Conv2d(1, 6, kernel_size=(5, 5)),

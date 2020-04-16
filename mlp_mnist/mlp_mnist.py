@@ -22,21 +22,42 @@ import time
 #-------------------------------------------------------------------------
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--nepoch', default=30, type=int,
+parser.add_argument('--nepoch', default=-1, type=int,
                     help="number of training epochs")
+parser.add_argument('--nbatch', default=-1, type=int,
+                    help="number of training/inference batches")
 parser.add_argument('--hammerblade', default=False, action='store_true',
                     help="run MLP MNIST on HammerBlade")
-parser.add_argument("--verbosity", default=False, action='store_true',
+parser.add_argument('--training', default=False, action='store_true',
+                    help="run training phase")
+parser.add_argument('--inference', default=False, action='store_true',
+                    help="run inference phase")
+parser.add_argument("-v", "--verbose", default=0, action='count',
                     help="increase output verbosity")
-parser.add_argument("--print-internal", default=False, action='store_true',
-                    help="print internal buffers")
-parser.add_argument("--dry", default=False, action='store_true',
-                    help="dry run")
 parser.add_argument("--save-model", default=False, action='store_true',
                     help="save trained model to file")
-parser.add_argument('--save-filename', default="trained_model", type=str,
+parser.add_argument("--load-model", default=False, action='store_true',
+                    help="load trained model from file")
+parser.add_argument('--model-filename', default="trained_model", type=str,
                     help="filename of the saved model")
+parser.add_argument("--dry", default=False, action='store_true',
+                    help="dry run")
 args = parser.parse_args()
+
+# By default, we do both training and inference
+if (not args.training) and (not args.inference):
+  args.training = True
+  args.inference = True
+
+# If not specified, run 30 epochs
+if args.nepoch == -1:
+  args.nepoch = 30
+
+# If nbatch is set, nepoch is forced to be 1
+if args.nbatch == -1:
+  args.nbatch = 65535
+else:
+  args.nepoch = 1
 
 #-------------------------------------------------------------------------
 # Prepare Dataset
@@ -59,7 +80,7 @@ class PrintLayer(nn.Module):
     super(PrintLayer, self).__init__()
 
   def forward(self, x):
-    if args.print_internal:
+    if args.verbose > 1:
       print(x)
     return x
 
@@ -93,127 +114,145 @@ class MLPModel(nn.Module):
 #-------------------------------------------------------------------------
 
 model = MLPModel()
+
+# Load pretrained model if necessary
+if args.load_model:
+  model.load_state_dict(torch.load(args.model_filename))
+
+# Move model to HammerBlade if using HB
+if args.hammerblade:
+  model.to(torch.device("hammerblade"))
+
 print(model)
 
-if args.hammerblade:
-  model.hammerblade()
-  print("model is set to run on HammerBlade")
-else:
-  model.cpu()
-  print("model is set to run on CPU")
+# Dump configs
+if args.verbose > 0:
+  print(args)
 
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-criterion = nn.CrossEntropyLoss()
-
-# quit here if dry run
+# Quit here if dry run
 if args.dry:
   exit(0)
 
-#-------------------------------------------------------------------------
 # Training
+if args.training:
+  print("Training for " + str(args.nepoch) + " epochs")
+
+  optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+  criterion = nn.CrossEntropyLoss()
+
+  # Timer
+  training_start = time.time()
+
+  for epoch in range(args.nepoch):
+    # Batch counter
+    batches = 0
+
+    # Monitor training loss
+    train_loss = 0.0
+
+    # Prep model for *training*
+    model.train()
+
+    for data, target in train_loader:
+      # Advance batch counter
+      if batches >= args.nbatch:
+        break
+      batches += 1
+
+      # Clear the gradients of all optimized variables
+      optimizer.zero_grad()
+      # Move data to correct device
+      if args.hammerblade:
+        input_data = data.view(-1, 28*28).hammerblade()
+        input_target = target.hammerblade()
+      else:
+        input_data = data.view(-1, 28*28)
+        input_target = target
+      # Forward pass: compute predicted outputs by passing inputs to the model
+      output = model(input_data)
+      if args.verbose > 1:
+        print("output")
+        print(output)
+      # Calculate the loss
+      loss = criterion(output, input_target)
+      # Backward pass: compute gradient of the loss with respect to model parameters
+      loss.backward()
+      # Perform a single optimization step (parameter update)
+      optimizer.step()
+      # Update running training loss
+      train_loss += loss.item()*data.size(0)
+
+    # Print training statistics
+    # Calculate average loss over an epoch
+    train_loss = train_loss/len(train_loader.dataset)
+
+    print('Epoch: {} \tTraining Loss: {:.6f}'.format(
+      epoch+1,
+      train_loss
+    ))
+
+  print("--- %s seconds ---" % (time.time() - training_start))
+
 #-------------------------------------------------------------------------
 
+# Inference
+if args.inference:
+  print("Inference ...")
 
-print('Training starting ...')
+  # Timer
+  inference_start = time.time()
 
-# monitor training progress
-counter = 0
+  # Batch counter
+  batches = 0
 
-for epoch in range(args.nepoch):
-  # monitor training loss
-  train_loss = 0.0
+  criterion = nn.CrossEntropyLoss()
 
-  ###################
-  # train the model #
-  ###################
-
-  # timer
-  start_time = time.time()
-
-  # prep model for *training*
-  model.train()
-
-  for data, target in train_loader:
-    # clear the gradients of all optimized variables
-    optimizer.zero_grad()
-    # move data to correct device
-    if args.hammerblade:
-      input_data = data.view(-1, 28*28).hammerblade()
-      input_target = target.hammerblade()
-    else:
-      input_data = data.view(-1, 28*28)
-      input_target = target
-    # forward pass: compute predicted outputs by passing inputs to the model
-    output = model(input_data)
-    if args.print_internal:
-      print("output")
-      print(output)
-    # calculate the loss
-    loss = criterion(output, input_target)
-    # backward pass: compute gradient of the loss with respect to model parameters
-    loss.backward()
-    # perform a single optimization step (parameter update)
-    optimizer.step()
-    # update running training loss
-    train_loss += loss.item()*data.size(0)
-
-    # training progress counter
-    counter += 1
-    if args.verbosity and counter % 100 == 0:
-      print('\t{:.3%}'.format(counter / 3000.0 / args.nepoch))
-
-  # print training statistics
-  # calculate average loss over an epoch
-  train_loss = train_loss/len(train_loader.dataset)
-
-  print('Epoch: {} \tTraining Loss: {:.6f}'.format(
-    epoch+1,
-    train_loss
-  ))
-  print("--- %s seconds ---" % (time.time() - start_time))
-
-  #-------------------------------------------------------------------------
-
-  ##############
-  # evaluation #
-  ##############
-
-  # initialize lists to monitor test loss and accuracy
+  # Initialize lists to monitor test loss and accuracy
   test_loss = 0.0
   class_correct = list(0. for i in range(10))
   class_total = list(0. for i in range(10))
 
-  # prep model for *evaluation*
+  # Prep model for *evaluation*
   model.eval()
 
   for data, target in test_loader:
-    # move data to correct device
+    # Advance batch counter
+    if batches >= args.nbatch:
+      break
+    batches += 1
+
+    # Move data to correct device
     if args.hammerblade:
       input_data = data.view(-1, 28*28).hammerblade()
       input_target = target.hammerblade()
     else:
       input_data = data.view(-1, 28*28)
       input_target = target
-    # forward pass: compute predicted outputs by passing inputs to the model
+    # Forward pass: compute predicted outputs by passing inputs to the model
     output = model(input_data)
-    # calculate the loss
+    if args.verbose > 1:
+      print("output")
+      print(output)
+    # Calculate the loss
     loss = criterion(output, input_target)
-    # update test loss
+    # Ppdate test loss
     test_loss += loss.item()*data.size(0)
-    # convert output probabilities to predicted class
+    # Convert output probabilities to predicted class
     _, pred = torch.max(output.cpu(), 1)
-    # compare predictions to true label
+    # Compare predictions to true label
     correct = np.squeeze(pred.eq(target.data.view_as(pred)))
     for i in range(len(target)):
       label = target.data[i]
       class_correct[label] += correct[i].item()
       class_total[label] += 1
 
-  # calculate and print avg test loss
+  print("--- %s seconds ---" % (time.time() - inference_start))
+
+  # Calculate and print avg test loss
   test_loss = test_loss/len(test_loader.sampler)
   print('Test Loss: {:.6f}\n'.format(test_loss))
 
-  # calculate and print accuracy
+  # Calculate and print accuracy
   print('\nTest Accuracy (Overall): %2d%% (%2d/%2d)' % (
         100. * np.sum(class_correct) / np.sum(class_total),
             np.sum(class_correct), np.sum(class_total)))
@@ -223,7 +262,7 @@ for epoch in range(args.nepoch):
 #-------------------------------------------------------------------------
 
 if args.save_model:
-  print("Saving model to " + args.save_filename)
+  print("Saving model to " + args.model_filename)
   model_cpu = copy.deepcopy(model)
   model_cpu.to(torch.device("cpu"))
   torch.save(model_cpu.state_dict(), args.save_filename)

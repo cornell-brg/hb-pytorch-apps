@@ -1,5 +1,6 @@
 import argparse
 import torch
+import numpy as np
 
 ATOL = 1e-5
 RTOL = 1e-5

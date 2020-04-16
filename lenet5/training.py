@@ -46,27 +46,26 @@ if __name__ == "__main__":
     print(model)
     
     if args.hammerblade:
-      model.hammerblade()
-      print("Model is set to run on HammerBlade")
+        model.hammerblade()
+        print("Model is set to run on HammerBlade")
     else:
-      model.cpu()
-      print("Model is set to run on CPU")
+        model.cpu()
+        print("Model is set to run on CPU")
 
     optimizer = torch.optim.SGD(
-              model.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM
-              )
+        model.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
     loss_func = nn.CrossEntropyLoss()
 
     # Quit here if dry run
     if args.dry:
-      exit(0)
+        exit(0)
     
     utils.train(model, train_loader, optimizer, loss_func, args.nepoch, args.nbatch)
     
     # Save model
     if args.save_model:
-      print("Saving model to " + args.save_filename)
-      model_cpu = copy.deepcopy(model)
-      model_cpu.to(torch.device("cpu"))
-      torch.save(model_cpu.state_dict(), args.save_filename)
+        print("Saving model to " + args.save_filename)
+        model_cpu = copy.deepcopy(model)
+        model_cpu.to(torch.device("cpu"))
+        torch.save(model_cpu.state_dict(), args.save_filename)

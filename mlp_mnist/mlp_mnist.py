@@ -16,6 +16,7 @@ import numpy as np
 import argparse
 import copy
 import time
+import random
 
 #-------------------------------------------------------------------------
 # Parse command line arguments
@@ -40,6 +41,8 @@ parser.add_argument("--load-model", default=False, action='store_true',
                     help="load trained model from file")
 parser.add_argument('--model-filename', default="trained_model", type=str,
                     help="filename of the saved model")
+parser.add_argument('--seed', default=42, type=int,
+                    help="manual random seed")
 parser.add_argument("--dry", default=False, action='store_true',
                     help="dry run")
 args = parser.parse_args()
@@ -58,6 +61,10 @@ if args.nbatch == -1:
   args.nbatch = 65535
 else:
   args.nepoch = 1
+
+torch.manual_seed(args.seed)
+np.random.seed(args.seed)
+random.seed(args.seed)
 
 #-------------------------------------------------------------------------
 # Prepare Dataset

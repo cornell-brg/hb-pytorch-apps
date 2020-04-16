@@ -12,10 +12,10 @@ def argparse_inference():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--nbatch', default=1, type=int,
                         help="Number of batches to be tested")
+    parser.add_argument('--hammerblade', default=False, action='store_true',
+                        help="Run on HammerBlade")
     parser.add_argument('--batch_size', default=1, type=int,
                         help="Training batch size")
-    parser.add_argument("--verbosity", default=False, action='store_true',
-                        help="Increase output verbosity")
     parser.add_argument("--dry", default=False, action='store_true',
                         help="Dry run")
     parser.add_argument('--filename', default="trained_model", type=str,
@@ -34,8 +34,6 @@ def argparse_training():
                         help="Training batch size")
     parser.add_argument('--hammerblade', default=False, action='store_true',
                         help="Run on HammerBlade")
-    parser.add_argument("--verbosity", default=False, action='store_true',
-                        help="Increase output verbosity")
     parser.add_argument("--dry", default=False, action='store_true',
                         help="Dry run")
     parser.add_argument("--save-model", default=False, action='store_true',
@@ -76,19 +74,19 @@ def train(model, loader, optimizer, loss_func, epochs, batches=None):
 
 # Test routine
 @torch.no_grad()
-def test(model, loader, loss_func, hb=False):
+def test(model, loader, loss_func, nbatch):
     test_loss = 0.0
     num_correct = 0
 
     for batch_idx, (data, labels) in enumerate(loader, 0):
-        if hb:
+        if is_model_on_hammerblade(model):
             data, labels = data.hammerblade(), labels.hammerblade()
         output = model(data)
         loss = loss_func(output, labels)
         pred = output.max(1)[1]
         num_correct += pred.eq(labels.view_as(pred)).sum().item()
 
-        if batch_idx == 100:
+        if batch_idx == nbatch:
             break
 
     test_loss /= len(loader.dataset)

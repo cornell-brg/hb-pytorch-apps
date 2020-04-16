@@ -22,6 +22,7 @@ import utils
 torch.manual_seed(42)
 
 if __name__ == "__main__":
+    # Parse inference arguments
     args = utils.argparse_inference()
 
     # Data
@@ -35,44 +36,21 @@ if __name__ == "__main__":
 
     test_loader  = DataLoader(test_data, batch_size=args.batch_size, num_workers=0)
 
-    # Create CPU model and load pre-trained parameters
     model = model.LeNet5()
-    model.load_state_dict(torch.load(args.filename))
-
-    # Create a HammerBlade model by deepcopying
-    model_hb = copy.deepcopy(model)
-    model_hb.to(torch.device("hammerblade"))
-
-    print("Model:")
     print(model)
 
-    # Set both models to use eval mode
-    model.eval()
-    model_hb.eval()
+    model.load_state_dict(torch.load(args.filename))
+
+    if args.hammerblade:
+        model.hammerblade()
+        print("Model is set to run on HammerBlade")
+    else:
+        model.cpu()
+        print("Model is set to run on CPU")
 
     # Quit here if dry run
     if args.dry:
       exit(0)
 
-    print("Running inference ...")
-
-    start_time = time.time()
-    batch_counter = 0
-
-    for data, target in test_loader:
-      if batch_counter >= args.nbatch:
-        break
-      output = model(data)
-      output_hb  = model_hb(data.hammerblade())
-      assert output_hb.device == torch.device("hammerblade")
-      assert torch.allclose(output, output_hb.cpu(), atol=utils.ATOL)
-      if args.verbosity:
-        print("batch " + str(batch_counter))
-        print("output_cpu")
-        print(output_cpu)
-        print("output_hb")
-        print(output_hb)
-      batch_counter += 1
-
-    print("done!")
-    print("--- %s seconds ---" % (time.time() - start_time))
+    # Inference
+    test(model, test_loader, loss_func, args.nbatch)

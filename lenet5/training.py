@@ -22,7 +22,7 @@ import utils
 torch.manual_seed(42)
 
 if __name__ == "__main__":
-    # Parse trainign arguments
+    # Parse training arguments
     args = utils.argparse_training()
 
     # Data
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     model = model.LeNet5()
     print(model)
-    
+
     if args.hammerblade:
         model.hammerblade()
         print("Model is set to run on HammerBlade")
@@ -60,9 +60,9 @@ if __name__ == "__main__":
     # Quit here if dry run
     if args.dry:
         exit(0)
-    
+
     utils.train(model, train_loader, optimizer, loss_func, args.nepoch, args.nbatch)
-    
+
     # Save model
     if args.save_model:
         print("Saving model to " + args.save_filename)

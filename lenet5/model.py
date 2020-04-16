@@ -6,7 +6,7 @@ Small 5-layer CNN workload
 import torch
 import torch.nn as nn
 
-class Network(nn.Module):
+class LeNet5(nn.Module):
     """
     LeNet-5
 

@@ -1,5 +1,5 @@
 """
-Test on a small CNN
+Inference on a small CNN
 03/16/2020 Bandhav Veluri
 """
 import sys
@@ -57,10 +57,10 @@ if __name__ == "__main__":
     test_data  = MNIST('./data', train=False, download=True,
                        transform=transforms)
 
-    test_loader  = DataLoader(test_data, batch_size=20, num_workers=0)
+    test_loader  = DataLoader(test_data, batch_size=args.batch_size, num_workers=0)
 
     # Create CPU model and load pre-trained parameters
-    net = model.Network()
+    net = model.LeNet5()
     net.load_state_dict(torch.load(args.filename))
 
     # Create a HammerBlade model by deepcopying

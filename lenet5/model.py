@@ -14,7 +14,7 @@ class LeNet5(nn.Module):
     (Page 7)
     """
     def __init__(self):
-        super(Network, self).__init__()
+        super(LeNet5, self).__init__()
 
         self.conv = nn.Sequential(
             nn.Conv2d(1, 6, kernel_size=(5, 5)),

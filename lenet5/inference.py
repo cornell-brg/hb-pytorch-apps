@@ -49,7 +49,6 @@ if __name__ == "__main__":
     args = utils.argparse_inference()
 
     # Data
-    # Data
     transforms = transforms.Compose([
         transforms.Resize((32,32)),
         transforms.ToTensor(),
@@ -66,12 +65,10 @@ if __name__ == "__main__":
 
     # Create a HammerBlade model by deepcopying
     net_hb = copy.deepcopy(net)
-    net.to(torch.device("hammerblade"))
+    net_hb.to(torch.device("hammerblade"))
 
-    print("Network on CPU:")
+    print("Model:")
     print(net)
-    print("Network on HammerBlade:")
-    print(net_hb)
 
     # Set both models to use eval mode
     net.eval()

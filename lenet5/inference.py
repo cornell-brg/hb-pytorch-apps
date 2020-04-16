@@ -21,30 +21,6 @@ import utils
 
 torch.manual_seed(42)
 
-# Test routine
-@torch.no_grad()
-def inference(net, loader, loss_func, hb=False):
-    test_loss = 0.0
-    num_correct = 0
-
-    for batch_idx, (data, labels) in enumerate(loader, 0):
-        if hb:
-            data, labels = data.hammerblade(), labels.hammerblade()
-        output = net(data)
-        loss = loss_func(output, labels)
-        pred = output.max(1)[1]
-        num_correct += pred.eq(labels.view_as(pred)).sum().item()
-
-        if batch_idx == 100:
-            break
-
-    test_loss /= len(loader.dataset)
-    test_accuracy = 100. * (num_correct / len(loader.dataset))
-
-    print('Test set: Average loss={:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        test_loss, num_correct, len(loader.dataset), test_accuracy
-    ))
-
 if __name__ == "__main__":
     args = utils.argparse_inference()
 
@@ -60,19 +36,19 @@ if __name__ == "__main__":
     test_loader  = DataLoader(test_data, batch_size=args.batch_size, num_workers=0)
 
     # Create CPU model and load pre-trained parameters
-    net = model.LeNet5()
-    net.load_state_dict(torch.load(args.filename))
+    model = model.LeNet5()
+    model.load_state_dict(torch.load(args.filename))
 
     # Create a HammerBlade model by deepcopying
-    net_hb = copy.deepcopy(net)
-    net_hb.to(torch.device("hammerblade"))
+    model_hb = copy.deepcopy(model)
+    model_hb.to(torch.device("hammerblade"))
 
     print("Model:")
-    print(net)
+    print(model)
 
     # Set both models to use eval mode
-    net.eval()
-    net_hb.eval()
+    model.eval()
+    model_hb.eval()
 
     # Quit here if dry run
     if args.dry:
@@ -86,8 +62,8 @@ if __name__ == "__main__":
     for data, target in test_loader:
       if batch_counter >= args.nbatch:
         break
-      output = net(data)
-      output_hb  = net_hb(data.hammerblade())
+      output = model(data)
+      output_hb  = model_hb(data.hammerblade())
       assert output_hb.device == torch.device("hammerblade")
       assert torch.allclose(output, output_hb.cpu(), atol=utils.ATOL)
       if args.verbosity:

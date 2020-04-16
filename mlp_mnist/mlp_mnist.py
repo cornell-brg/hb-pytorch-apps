@@ -63,8 +63,8 @@ else:
   args.nepoch = 1
 
 torch.manual_seed(args.seed)
-np.random.seed(args.seed)
-random.seed(args.seed)
+np.random.seed(args.seed + 1)
+random.seed(args.seed + 2)
 
 #-------------------------------------------------------------------------
 # Prepare Dataset

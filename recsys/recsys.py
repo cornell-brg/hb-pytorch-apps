@@ -14,7 +14,10 @@ import numpy as np
 import pandas as pd
 import argparse
 import random
+import time
+import copy
 from sklearn.model_selection import train_test_split
+from tqdm import tqdm
 
 #-------------------------------------------------------------------------
 # Parse command line arguments
@@ -137,7 +140,7 @@ def make_dataloader(X, n_toks, batch_size, shuffle):
         dataset=RaggedAutoencoderDataset(X=X, n_toks=n_toks),
         batch_size=batch_size,
         collate_fn=ragged_collate_fn,
-        num_workers=4,
+        num_workers=0,
         pin_memory=True,
         shuffle=shuffle,
     )
@@ -145,6 +148,8 @@ def make_dataloader(X, n_toks, batch_size, shuffle):
 # Load data
 X_train = np.load('%s_train.npy' % args.cache_path, allow_pickle=True)
 n_toks  = np.hstack(X_train).max() + 1
+shuf_dataloader = make_dataloader(X_train, n_toks, 256, shuffle=True)
+seq_dataloader = make_dataloader(X_train, n_toks, 256, shuffle=False)
 
 #-------------------------------------------------------------------------
 # Print Layer
@@ -228,3 +233,101 @@ if args.verbose > 0:
 if args.dry:
   exit(0)
 
+
+# Training
+if args.training:
+  print("Training for " + str(args.nepoch) + " epochs")
+
+  # Timer
+  training_start = time.time()
+
+  opt = torch.optim.Adam(model.parameters(), lr=0.01)
+
+  for epoch in range(args.nepoch):
+    # Batch counter
+    batches = 0
+
+    # Set model for *training*
+    _ = model.train()
+
+    for x, y in tqdm(shuf_dataloader, total=len(shuf_dataloader)):
+      # Advance batch counter
+      if batches >= args.nbatch:
+        break
+      batches += 1
+
+      # Move data if necessary
+      if args.hammerblade:
+        x, y = x.hammerblade(), y.hammerblade()
+
+      out  = model(x)
+      if args.verbose > 1:
+        print("output")
+        print(out)
+      loss = F.binary_cross_entropy_with_logits(out, y)
+
+      opt.zero_grad()
+      loss.backward()
+      opt.step()
+
+  print("--- %s seconds ---" % (time.time() - training_start))
+
+#-------------------------------------------------------------------------
+
+# Inference
+if args.inference:
+  print('predicting', file=sys.stderr)
+
+  # Timer
+  inference_start = time.time()
+
+  # Set model for *inference*
+  _ = model.eval()
+
+  # Batch counter
+  batches = 0
+
+  preds = []
+  for x, _ in tqdm(seq_dataloader, total=len(seq_dataloader)):
+    # Advance batch counter
+    if batches >= args.nbatch:
+      break
+    batches += 1
+
+    # Move data if necessary
+    if args.hammerblade:
+        x = x.hammerblade()
+
+    pred = model(x)
+    if args.verbose > 1:
+      print("output")
+      print(pred)
+    pred = pred.detach().cpu().numpy()
+    preds.append(pred)
+
+  print("--- %s seconds ---" % (time.time() - inference_start))
+
+  if args.nbatch == 65535:
+    preds = np.vstack(preds)
+
+    assert isinstance(preds, np.ndarray)
+    assert preds.shape[0] == len(X_train)
+    assert preds.shape[1] == n_toks
+
+    # --
+    # Write results
+
+    os.makedirs('results', exist_ok=True)
+
+    topk = compute_topk(X_train, preds)
+    np.savetxt('results/topk', topk)
+
+#-------------------------------------------------------------------------
+# Model saving
+#-------------------------------------------------------------------------
+
+if args.save_model:
+  print("Saving model to " + args.model_filename)
+  model_cpu = copy.deepcopy(model)
+  model_cpu.to(torch.device("cpu"))
+  torch.save(model_cpu.state_dict(), args.save_filename)

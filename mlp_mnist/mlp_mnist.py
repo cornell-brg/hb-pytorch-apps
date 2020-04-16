@@ -199,13 +199,13 @@ if args.training:
 if args.inference:
   print("Inference ...")
 
-  # Timer
-  inference_start = time.time()
-
   # Batch counter
   batches = 0
 
   criterion = nn.CrossEntropyLoss()
+
+  # Timer
+  inference_start = time.time()
 
   # Initialize lists to monitor test loss and accuracy
   test_loss = 0.0

@@ -16,6 +16,7 @@ import argparse
 import random
 import time
 import copy
+import json
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
@@ -52,6 +53,8 @@ parser.add_argument('--dataset-path', type=str, default='data/ml-10m.ratings.dat
                     help="path to raw movielens dataset")
 parser.add_argument('--cache-path', type=str, default='data/cache',
                     help="path to preprocessed data cache")
+parser.add_argument("--validate", default=False, action='store_true',
+                    help="run validation")
 
 args = parser.parse_args()
 
@@ -68,6 +71,9 @@ if args.nepoch == -1:
 if args.nbatch == -1:
   args.nbatch = 65535
 else:
+  if args.validate:
+    print('Cannot run validation without running all batches')
+    exit(0)
   args.nepoch = 1
 
 torch.manual_seed(args.seed)
@@ -207,28 +213,41 @@ class MLPEncoder(nn.Module):
 # Helpers
 #-------------------------------------------------------------------------
 
+def _overlap(x, y):
+  return len(set(x).intersection(y))
+
 def compute_topk(X_train, preds, ks=[1, 5, 10]):
-    max_k = max(ks)
+  max_k = max(ks)
 
-    # --
-    # Filter training samples
+  # --
+  # Filter training samples
 
-    # !! The model will tend to predict samples that are in the training data
-    # and so (by construction) not in the validation data.  We don't want to
-    # count these as incorrect though, so we filter them from the predictions
-    low_score = preds.min() - 1
-    for i, xx in enumerate(X_train):
-        preds[i][xx] = low_score
+  # !! The model will tend to predict samples that are in the training data
+  # and so (by construction) not in the validation data.  We don't want to
+  # count these as incorrect though, so we filter them from the predictions
+  low_score = preds.min() - 1
+  for i, xx in enumerate(X_train):
+    preds[i][xx] = low_score
 
-    # --
-    # Get top-k predictions
+  # --
+  # Get top-k predictions
 
-    # identical to `np.argsort(-pred, axis=-1)[:,:k]`, but should be faster
-    topk = np.argpartition(-preds, kth=max_k, axis=-1)[:,:max_k]
-    topk = np.vstack([r[np.argsort(-p[r])] for r,p in zip(topk, preds)])
+  # identical to `np.argsort(-pred, axis=-1)[:,:k]`, but should be faster
+  topk = np.argpartition(-preds, kth=max_k, axis=-1)[:,:max_k]
+  topk = np.vstack([r[np.argsort(-p[r])] for r,p in zip(topk, preds)])
 
-    return topk
+  return topk
 
+def compute_scores(topk, X_valid, ks=[1, 5, 10]):
+  # --
+  # Compute precision-at-k for each value of k
+
+  precision_at_k = {}
+  for k in ks:
+    ps = [_overlap(X_valid[i], topk[i][:k]) for i in range(len(X_valid))]
+    precision_at_k[k] = np.mean(ps) / k
+
+  return precision_at_k
 #-------------------------------------------------------------------------
 # main
 #-------------------------------------------------------------------------
@@ -333,20 +352,33 @@ if args.inference:
 
   print("--- %s seconds ---" % (time.time() - inference_start))
 
-  if args.nbatch == 65535:
+  # Validation
+  if args.validate:
     preds = np.vstack(preds)
 
     assert isinstance(preds, np.ndarray)
     assert preds.shape[0] == len(X_train)
     assert preds.shape[1] == n_toks
 
-    # --
-    # Write results
-
-    os.makedirs('results', exist_ok=True)
-
+    X_valid = np.load('%s_valid.npy' % args.cache_path, allow_pickle=True)
     topk = compute_topk(X_train, preds)
-    np.savetxt('results/topk', topk)
+
+    scores = compute_scores(topk, X_valid)
+
+    # --
+    # Log
+
+    P_AT_01_THRESHOLD = 0.475
+
+    print(json.dumps({
+        "status"  : "PASS" if scores[1] >= P_AT_01_THRESHOLD else "FAIL",
+        "p_at_01" : scores[1],
+        "p_at_05" : scores[5],
+        "p_at_10" : scores[10],
+    }))
+
+    does_pass = "PASS" if scores[1] >= P_AT_01_THRESHOLD else "FAIL"
+    print("Validation: " + does_pass)
 
 #-------------------------------------------------------------------------
 # Model saving

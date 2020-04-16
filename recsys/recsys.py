@@ -60,9 +60,9 @@ if (not args.training) and (not args.inference):
   args.training = True
   args.inference = True
 
-# If not specified, run 30 epochs
+# If not specified, run 1 epoch
 if args.nepoch == -1:
-  args.nepoch = 30
+  args.nepoch = 1
 
 # If nbatch is set, nepoch is forced to be 1
 if args.nbatch == -1:
@@ -202,6 +202,32 @@ class MLPEncoder(nn.Module):
         x = self.act_bn_drop_2(x)
         x = self.output(x)
         return x
+
+#-------------------------------------------------------------------------
+# Helpers
+#-------------------------------------------------------------------------
+
+def compute_topk(X_train, preds, ks=[1, 5, 10]):
+    max_k = max(ks)
+
+    # --
+    # Filter training samples
+
+    # !! The model will tend to predict samples that are in the training data
+    # and so (by construction) not in the validation data.  We don't want to
+    # count these as incorrect though, so we filter them from the predictions
+    low_score = preds.min() - 1
+    for i, xx in enumerate(X_train):
+        preds[i][xx] = low_score
+
+    # --
+    # Get top-k predictions
+
+    # identical to `np.argsort(-pred, axis=-1)[:,:k]`, but should be faster
+    topk = np.argpartition(-preds, kth=max_k, axis=-1)[:,:max_k]
+    topk = np.vstack([r[np.argsort(-p[r])] for r,p in zip(topk, preds)])
+
+    return topk
 
 #-------------------------------------------------------------------------
 # main

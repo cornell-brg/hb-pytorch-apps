@@ -2,11 +2,16 @@
 Test on a small CNN
 03/16/2020 Bandhav Veluri
 """
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
 import numpy as np
 import torch
 import torch.nn as nn
 import model
+import utils
 
 torch.manual_seed(42)
 
@@ -37,3 +42,4 @@ def inference(net, loader, loss_func, hb=False):
 if __name__ == "__main__":
     net = model.Network()
     print(net)
+    print(utils.ATOL)

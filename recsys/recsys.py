@@ -175,31 +175,31 @@ class PrintLayer(nn.Module):
 #-------------------------------------------------------------------------
 
 class MLPEncoder(nn.Module):
-    def __init__(self, n_toks, emb_dim, hidden_dim, dropout, bias_offset):
+    def __init__(self, n_toks):
         super().__init__()
 
-        self.emb = nn.Embedding(n_toks, emb_dim, padding_idx=0)
+        self.emb = nn.Embedding(n_toks, 800, padding_idx=0)
         torch.nn.init.normal_(self.emb.weight.data, 0, 0.01)
         self.emb.weight.data[0] = 0
 
         self.act_bn_drop_1 = nn.Sequential(
             nn.ReLU(),
-            nn.BatchNorm1d(emb_dim),
-            nn.Dropout(dropout),
+            nn.BatchNorm1d(800),
+            nn.Dropout(0.5),
         )
 
-        self.bottleneck = nn.Linear(emb_dim, hidden_dim)
+        self.bottleneck = nn.Linear(800, 400)
         self.bottleneck.bias.data.zero_()
 
         self.act_bn_drop_2 = nn.Sequential(
             nn.ReLU(),
-            nn.BatchNorm1d(hidden_dim),
-            nn.Dropout(dropout),
+            nn.BatchNorm1d(400),
+            nn.Dropout(0.5),
         )
 
-        self.output = nn.Linear(hidden_dim, n_toks)
+        self.output = nn.Linear(400, n_toks)
         self.output.bias.data.zero_()
-        self.output.bias.data += bias_offset
+        self.output.bias.data += -10
 
     def forward(self, x):
         x = self.emb(x).sum(dim=1)
@@ -252,13 +252,7 @@ def compute_scores(topk, X_valid, ks=[1, 5, 10]):
 # main
 #-------------------------------------------------------------------------
 
-model = MLPEncoder(
-    n_toks=n_toks,
-    emb_dim=800,
-    hidden_dim=400,
-    dropout=0.5,
-    bias_offset=-10
-)
+model = MLPEncoder(n_toks=n_toks)
 
 # Load pretrained model if necessary
 if args.load_model:

@@ -4,12 +4,18 @@ Test on a small CNN
 """
 import sys
 import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-
 import numpy as np
 import torch
 import torch.nn as nn
+import numpy as np
+import copy
+import time
+from torch.utils.data     import DataLoader
+from torchvision          import transforms
+from torchvision.datasets import MNIST
+
+sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+
 import model
 import utils
 
@@ -40,6 +46,60 @@ def inference(net, loader, loss_func, hb=False):
     ))
 
 if __name__ == "__main__":
+    args = utils.argparse_inference()
+
+    # Data
+    # Data
+    transforms = transforms.Compose([
+        transforms.Resize((32,32)),
+        transforms.ToTensor(),
+    ])
+
+    test_data  = MNIST('./data', train=False, download=True,
+                       transform=transforms)
+
+    test_loader  = DataLoader(test_data, batch_size=20, num_workers=0)
+
+    # Create CPU model and load pre-trained parameters
     net = model.Network()
+    net.load_state_dict(torch.load(args.filename))
+
+    # Create a HammerBlade model by deepcopying
+    net_hb = copy.deepcopy(net)
+    net.to(torch.device("hammerblade"))
+
+    print("Network on CPU:")
     print(net)
-    print(utils.ATOL)
+    print("Network on HammerBlade:")
+    print(net_hb)
+
+    # Set both models to use eval mode
+    net.eval()
+    net_hb.eval()
+
+    # Quit here if dry run
+    if args.dry:
+      exit(0)
+
+    print("Running inference ...")
+
+    start_time = time.time()
+    batch_counter = 0
+
+    for data, target in test_loader:
+      if batch_counter >= args.nbatch:
+        break
+      output = net(data)
+      output_hb  = net_hb(data.hammerblade())
+      assert output_hb.device == torch.device("hammerblade")
+      assert torch.allclose(output, output_hb.cpu(), atol=utils.ATOL)
+      if args.verbosity:
+        print("batch " + str(batch_counter))
+        print("output_cpu")
+        print(output_cpu)
+        print("output_hb")
+        print(output_hb)
+      batch_counter += 1
+
+    print("done!")
+    print("--- %s seconds ---" % (time.time() - start_time))

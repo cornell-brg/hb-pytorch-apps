@@ -76,7 +76,7 @@ def train(model, loader, optimizer, loss_func, epochs, batches=None):
 
 # Test routine
 @torch.no_grad()
-def inference(model, loader, loss_func, hb=False):
+def test(model, loader, loss_func, hb=False):
     test_loss = 0.0
     num_correct = 0
 

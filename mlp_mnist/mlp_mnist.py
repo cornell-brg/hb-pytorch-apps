@@ -42,17 +42,6 @@ train_loader = DataLoader( train_data, batch_size=args.batch_size, num_workers=0
 test_loader  = DataLoader( test_data, batch_size=args.batch_size, num_workers=0 )
 
 #-------------------------------------------------------------------------
-# Input formatting layer
-#-------------------------------------------------------------------------
-class FormatInput( nn.Module ):
-
-  def __init__( self ):
-    super( FormatInput, self ).__init__()
-
-  def forward( self, x ):
-    return x.view( -1, 28 * 28 )
-
-#-------------------------------------------------------------------------
 # Multilayer Preception for MNIST
 #-------------------------------------------------------------------------
 
@@ -63,7 +52,6 @@ class MLPModel( nn.Module ):
 
     self.mnist = nn.Sequential \
     (
-      FormatInput(),
       nn.Linear( 784, 128 ),
       nn.ReLU(),
       nn.Dropout( 0.2 ),
@@ -74,7 +62,7 @@ class MLPModel( nn.Module ):
     )
 
   def forward( self, x ):
-    return self.mnist( x )
+    return self.mnist( x.view(-1, 28 * 28) )
 
 #-------------------------------------------------------------------------
 # main

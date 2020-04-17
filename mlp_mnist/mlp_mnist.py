@@ -7,6 +7,8 @@
 # https://towardsdatascience.com/multi-layer-perceptron-usingfastai-and-pytorch-9e401dd288b8
 #=========================================================================
 
+import sys
+import os
 import torch
 from torch                import nn
 from torch.utils.data     import DataLoader
@@ -18,54 +20,14 @@ import copy
 import time
 import random
 from tqdm import tqdm
+sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+from utils import parse_model_args, PrintLayer
 
 #-------------------------------------------------------------------------
 # Parse command line arguments
 #-------------------------------------------------------------------------
 
-parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--nepoch', default=-1, type=int,
-                    help="number of training epochs")
-parser.add_argument('--nbatch', default=-1, type=int,
-                    help="number of training/inference batches")
-parser.add_argument('--hammerblade', default=False, action='store_true',
-                    help="run MLP MNIST on HammerBlade")
-parser.add_argument('--training', default=False, action='store_true',
-                    help="run training phase")
-parser.add_argument('--inference', default=False, action='store_true',
-                    help="run inference phase")
-parser.add_argument("-v", "--verbose", default=0, action='count',
-                    help="increase output verbosity")
-parser.add_argument("--save-model", default=False, action='store_true',
-                    help="save trained model to file")
-parser.add_argument("--load-model", default=False, action='store_true',
-                    help="load trained model from file")
-parser.add_argument('--model-filename', default="trained_model", type=str,
-                    help="filename of the saved model")
-parser.add_argument('--seed', default=42, type=int,
-                    help="manual random seed")
-parser.add_argument("--dry", default=False, action='store_true',
-                    help="dry run")
-args = parser.parse_args()
-
-# By default, we do both training and inference
-if (not args.training) and (not args.inference):
-  args.training = True
-  args.inference = True
-
-# If not specified, run 30 epochs
-if args.nepoch == -1:
-  args.nepoch = 30
-
-# If nbatch is set, nepoch is forced to be 1
-if args.nbatch == -1:
-  args.nbatch = 65535
-else:
-  args.nepoch = 1
-
-torch.manual_seed(args.seed)
-np.random.seed(args.seed + 1)
-random.seed(args.seed + 2)
+args = parse_model_args()
 
 #-------------------------------------------------------------------------
 # Prepare Dataset
@@ -76,21 +38,8 @@ train_data = MNIST( './data', train=True, download=True,
 test_data  = MNIST( './data', train=False, download=True,
                     transform=transforms.ToTensor() )
 
-train_loader = DataLoader(train_data, batch_size=32, num_workers=0)
-test_loader  = DataLoader(test_data, batch_size=32, num_workers=0)
-
-#-------------------------------------------------------------------------
-# Print Layer
-#-------------------------------------------------------------------------
-class PrintLayer(nn.Module):
-
-  def __init__(self):
-    super(PrintLayer, self).__init__()
-
-  def forward(self, x):
-    if args.verbose > 1:
-      print(x)
-    return x
+train_loader = DataLoader(train_data, batch_size=args.batch_size, num_workers=0)
+test_loader  = DataLoader(test_data, batch_size=args.batch_size, num_workers=0)
 
 #-------------------------------------------------------------------------
 # Multilayer Preception for MNIST
@@ -132,10 +81,6 @@ if args.hammerblade:
   model.to(torch.device("hammerblade"))
 
 print(model)
-
-# Dump configs
-if args.verbose > 0:
-  print(args)
 
 # Quit here if dry run
 if args.dry:

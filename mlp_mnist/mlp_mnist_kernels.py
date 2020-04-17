@@ -102,40 +102,40 @@ add-1      N=100352               *           0.1
 """
 
 key_kernels = { "addmm-1" : { "kernel_impl"  : addmm,
-                              "full_data"    : (20, 784, 128),
-                              "reduced_data" : (10, 784, 16)
+                              "full_data"    : [20, 784, 128],
+                              "reduced_data" : [10, 784, 16]
                             },
                 "addmm-2" : { "kernel_impl"  : addmm,
-                              "full_data"    : (20, 128, 64),
-                              "reduced_data" : (10, 128, 8)
+                              "full_data"    : [20, 128, 64],
+                              "reduced_data" : [10, 128, 8]
                             },
                 "addmm-3" : { "kernel_impl"  : addmm,
-                              "full_data"    : (20, 64, 10),
-                              "reduced_data" : (10, 64, 2)
+                              "full_data"    : [20, 64, 10],
+                              "reduced_data" : [10, 64, 2]
                             },
                 "addmm-4" : { "kernel_impl"  : addmm,
-                              "full_data"    : (20, 10, 64),
-                              "reduced_data" : (10, 10, 8)
+                              "full_data"    : [20, 10, 64],
+                              "reduced_data" : [10, 10, 8]
                             },
                 "addmm-5" : { "kernel_impl"  : addmm,
-                              "full_data"    : (10, 20, 64),
-                              "reduced_data" : (5, 20, 8)
+                              "full_data"    : [10, 20, 64],
+                              "reduced_data" : [5, 20, 8]
                             },
                 "addmm-6" : { "kernel_impl"  : addmm,
-                              "full_data"    : (20, 64, 128),
-                              "reduced_data" : (10, 64, 16)
+                              "full_data"    : [20, 64, 128],
+                              "reduced_data" : [10, 64, 16]
                             },
                 "addmm-7" : { "kernel_impl"  : addmm,
-                              "full_data"    : (64, 20, 128),
-                              "reduced_data" : (32, 20, 16)
+                              "full_data"    : [64, 20, 128],
+                              "reduced_data" : [32, 20, 16]
                             },
                 "addmm-8" : { "kernel_impl"  : addmm,
-                              "full_data"    : (128, 20, 784),
-                              "reduced_data" : (64, 20, 98)
+                              "full_data"    : [128, 20, 784],
+                              "reduced_data" : [64, 20, 98]
                             },
                 "add-1"   : { "kernel_impl"  : add,
-                             "full_data"    : (100352),
-                             "reduced_data" : (6272)
+                             "full_data"    : [100352],
+                             "reduced_data" : [6272]
                            },
               }
 

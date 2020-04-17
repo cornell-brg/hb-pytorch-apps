@@ -21,7 +21,7 @@ def parse_model_args( workload_args=None ):
   parser = argparse.ArgumentParser( formatter_class=argparse.ArgumentDefaultsHelpFormatter )
 
   # Common options
-  parser.add_argument( '--nepoch', default=-1, type=int,
+  parser.add_argument( '--nepoch', default=30, type=int,
                        help="number of training epochs" )
   parser.add_argument( '--nbatch', default=-1, type=int,
                        help="number of training/inference batches" )
@@ -57,10 +57,6 @@ def parse_model_args( workload_args=None ):
   if ( not args.training ) and ( not args.inference ):
     args.training = True
     args.inference = True
-
-  # If not specified, run 30 epochs
-  if args.nepoch == -1:
-    args.nepoch = 30
 
   # If nbatch is set, nepoch is forced to be 1
   if args.nbatch == -1:

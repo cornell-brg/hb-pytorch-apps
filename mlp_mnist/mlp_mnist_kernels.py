@@ -17,6 +17,8 @@ import random
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--list-kernels', default=False, action='store_true',
                     help="print isolated kernels")
+parser.add_argument('--kernels', default='', type=str,
+                    help="which kernels to run")
 parser.add_argument('--full-data', default=False, action='store_true',
                     help="run kernels with full data size")
 parser.add_argument('--reduced-data', default=False, action='store_true',
@@ -28,6 +30,9 @@ args = parser.parse_args()
 # Run full data by default
 if (not args.full_data) and (not args.reduced_data):
   args.full_data = True
+
+# Parse which kernels to run
+args.kernels_to_run = args.kernels.split(",")
 
 # Set random seeds
 torch.manual_seed(args.seed)
@@ -49,7 +54,7 @@ def addmm(inputs):
   mat1 = torch.randn(M, N)
   mat2 = torch.randn(N, P)
 
-  print("--- running addmm (%d, %d, %d) ---" % (M, N, P))
+  print("  --- running addmm (%d, %d, %d) ---" % (M, N, P))
 
   # Timer
   start = time.time()
@@ -58,16 +63,16 @@ def addmm(inputs):
 
   end = time.time()
 
-  print("--- %s seconds ---" % (end - start))
+  print("  --- %s seconds ---" % (end - start))
 
 def add(inputs):
   # Unpack inputs
   N = inputs[0]
 
   # Create random inputs
-  data = troch.randn(N)
+  data = torch.randn(N)
 
-  print("--- running add (%d) ---" % (N))
+  print("  --- running add (%d) ---" % (N))
 
   # Timer
   start = time.time()
@@ -76,7 +81,7 @@ def add(inputs):
 
   end = time.time()
 
-  print("--- %s seconds ---" % (end - start))
+  print("  --- %s seconds ---" % (end - start))
 
 #-------------------------------------------------------------------------
 # Kernels
@@ -143,10 +148,10 @@ class KeyKernel:
     self.reduced_data = reduced_data
 
   def run_full_data(self):
-    self.kernel_impl(full_data)
+    self.kernel_impl(self.full_data)
 
   def run_reduced_data(self):
-    self.kernel_impl(reduced_data)
+    self.kernel_impl(self.reduced_data)
 
   def print(self):
     print("kernel %s:" % (self.name))
@@ -163,6 +168,15 @@ for name in key_kernels.keys():
   reduced_data = key_kernels[name]["reduced_data"]
   key_kernel_objs[name] = KeyKernel(name, kernel_impl, full_data, reduced_data)
 
+# By default, run all kernels
+if args.kernels == '':
+  args.kernels_to_run = key_kernels.keys()
+
+for k in args.kernels_to_run:
+  if not k in key_kernel_objs:
+    print("ERROR: unrecognized kernel -- %s" % (k))
+    exit(1)
+
 #-------------------------------------------------------------------------
 # List kernels
 #-------------------------------------------------------------------------
@@ -173,3 +187,21 @@ if args.list_kernels:
     key_kernel_objs[name].print()
   exit(0)
 
+#-------------------------------------------------------------------------
+# Run kernels
+#-------------------------------------------------------------------------
+
+print()
+for k in args.kernels_to_run:
+
+  print("Kernel %s:" % (k))
+
+  # Full data
+  if args.full_data:
+    key_kernel_objs[k].run_full_data()
+
+  # Reduced data
+  if args.reduced_data:
+    key_kernel_objs[k].run_reduced_data()
+
+  print()

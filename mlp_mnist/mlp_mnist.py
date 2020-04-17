@@ -17,6 +17,7 @@ import argparse
 import copy
 import time
 import random
+from tqdm import tqdm
 
 #-------------------------------------------------------------------------
 # Parse command line arguments
@@ -75,8 +76,8 @@ train_data = MNIST( './data', train=True, download=True,
 test_data  = MNIST( './data', train=False, download=True,
                     transform=transforms.ToTensor() )
 
-train_loader = DataLoader(train_data, batch_size=20, num_workers=0)
-test_loader  = DataLoader(test_data, batch_size=20, num_workers=0)
+train_loader = DataLoader(train_data, batch_size=32, num_workers=0)
+test_loader  = DataLoader(test_data, batch_size=32, num_workers=0)
 
 #-------------------------------------------------------------------------
 # Print Layer
@@ -160,7 +161,7 @@ if args.training:
     # Prep model for *training*
     model.train()
 
-    for data, target in train_loader:
+    for data, target in tqdm(train_loader, total=len(train_loader)):
       # Advance batch counter
       if batches >= args.nbatch:
         break
@@ -222,7 +223,7 @@ if args.inference:
   # Prep model for *evaluation*
   model.eval()
 
-  for data, target in test_loader:
+  for data, target in tqdm(test_loader, total=len(test_loader)):
     # Advance batch counter
     if batches >= args.nbatch:
       break

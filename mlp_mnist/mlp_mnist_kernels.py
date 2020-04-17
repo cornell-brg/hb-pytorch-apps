@@ -102,48 +102,48 @@ def add(inputs):
 """
 Kernel      Input Data Size      Tr  In    KFLOPs
 ---------------------------------------------------
-addmm-1    M=20,  N=784, P=128    *   *    4016.6
-addmm-2    M=20,  N=128, P=64     *   *     329.0
-addmm-3    M=20,  N=64,  P=10     *   *      25.8
-addmm-4    M=20,  N=10,  P=64     *          26.9
-addmm-5    M=10,  N=20,  P=64     *          26.2
-addmm-6    M=20,  N=64,  P=128    *         330.2
-addmm-7    M=64,  N=20,  P=128    *         335.9
-addmm-8    M=128, N=20,  P=784    *        4114.4
+addmm-1    M=32,  N=784, P=128    *   *    4016.6
+addmm-2    M=32,  N=128, P=64     *   *     329.0
+addmm-3    M=32,  N=64,  P=10     *   *      25.8
+addmm-4    M=32,  N=10,  P=64     *          26.9
+addmm-5    M=10,  N=32,  P=64     *          26.2
+addmm-6    M=32,  N=64,  P=128    *         330.2
+addmm-7    M=64,  N=32,  P=128    *         335.9
+addmm-8    M=128, N=32,  P=784    *        4114.4
 add-1      N=100352               *           0.1
 """
 
 key_kernels = { "addmm-1" : { "kernel_impl"  : addmm,
-                              "full_data"    : [20, 784, 128],
-                              "reduced_data" : [10, 784, 16]
+                              "full_data"    : [32, 784, 128],
+                              "reduced_data" : [2, 784, 128]
                             },
                 "addmm-2" : { "kernel_impl"  : addmm,
-                              "full_data"    : [20, 128, 64],
-                              "reduced_data" : [10, 128, 8]
+                              "full_data"    : [32, 128, 64],
+                              "reduced_data" : [2, 128, 64]
                             },
                 "addmm-3" : { "kernel_impl"  : addmm,
-                              "full_data"    : [20, 64, 10],
-                              "reduced_data" : [10, 64, 2]
+                              "full_data"    : [32, 64, 10],
+                              "reduced_data" : [2, 64, 10]
                             },
                 "addmm-4" : { "kernel_impl"  : addmm,
-                              "full_data"    : [20, 10, 64],
-                              "reduced_data" : [10, 10, 8]
+                              "full_data"    : [32, 10, 64],
+                              "reduced_data" : [2, 10, 64]
                             },
                 "addmm-5" : { "kernel_impl"  : addmm,
-                              "full_data"    : [10, 20, 64],
-                              "reduced_data" : [5, 20, 8]
+                              "full_data"    : [10, 32, 64],
+                              "reduced_data" : [10, 2, 64]
                             },
                 "addmm-6" : { "kernel_impl"  : addmm,
-                              "full_data"    : [20, 64, 128],
-                              "reduced_data" : [10, 64, 16]
+                              "full_data"    : [32, 64, 128],
+                              "reduced_data" : [2, 64, 128]
                             },
                 "addmm-7" : { "kernel_impl"  : addmm,
-                              "full_data"    : [64, 20, 128],
-                              "reduced_data" : [32, 20, 16]
+                              "full_data"    : [64, 32, 128],
+                              "reduced_data" : [64, 2, 128]
                             },
                 "addmm-8" : { "kernel_impl"  : addmm,
-                              "full_data"    : [128, 20, 784],
-                              "reduced_data" : [64, 20, 98]
+                              "full_data"    : [128, 32, 784],
+                              "reduced_data" : [128, 2, 784]
                             },
                 "add-1"   : { "kernel_impl"  : add,
                              "full_data"    : [100352],

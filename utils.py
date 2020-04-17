@@ -2,8 +2,10 @@
 # 04/17/2020 Bandhav Veluri, Lin Cheng
 
 import argparse
+import copy
 import numpy as np
 import random
+import time
 import torch
 import torch.nn as nn
 from tqdm import tqdm
@@ -62,7 +64,7 @@ def parse_model_args( workload_args=None ):
 
   # If nbatch is set, nepoch is forced to be 1
   if args.nbatch == -1:
-    args.nbatch = 65535
+    args.nbatch = None
   else:
     args.nepoch = 1
 
@@ -78,16 +80,99 @@ def parse_model_args( workload_args=None ):
   return args
 
 #-------------------------------------------------------------------------
-# Print Layer
+# Model saving
 #-------------------------------------------------------------------------
 
-class PrintLayer(nn.Module):
+def save_model( model, model_filename ):
+  print("Saving model to " + model_filename)
+  model_cpu = copy.deepcopy(model)
+  model_cpu.to(torch.device("cpu"))
+  torch.save(model_cpu.state_dict(), save_filename)
 
-  def __init__(self):
-    super(PrintLayer, self).__init__()
+#-------------------------------------------------------------------------
+# Common training routine
+#-------------------------------------------------------------------------
 
-  def forward(self, x):
+def train( model, loader, optimizer, loss_func, args ):
+
+  print( 'Training {} for {} epoch(s)...'.format(
+    type(model).__name__,
+    args.nepoch
+  ))
+
+  # Timer
+  training_start = time.time()
+
+  # Prep model for *training*
+  model.train()
+
+  for epoch in range( args.nepoch ):
+
+    losses = []
+
+    for batch_idx, (data, labels) in tqdm( enumerate(loader, 0), total=len(loader) ):
+      if args.hammerblade:
+        data, labels = data.hammerblade(), labels.hammerblade()
+      batch_size = len( data )
+      optimizer.zero_grad()
+      outputs = model( data )
+      if args.verbose > 1:
+        print( "outputs:" )
+        print( outputs )
+      loss = loss_func( outputs, labels )
+      losses.append( loss.item() )
+      loss.backward()
+      optimizer.step()
+
+      if ( args.nbatch is not None ) and ( batch_idx + 1 >= args.nbatch ):
+        break
+
+    print( 'epoch {} : Average Loss={:.6f}\n'.format(
+        epoch,
+        np.mean( losses )
+    ))
+
+  print( "--- %s seconds ---" % (time.time() - training_start) )
+
+#-------------------------------------------------------------------------
+# Common inference routine
+#-------------------------------------------------------------------------
+
+@torch.no_grad()
+def inference( model, loader, loss_func, args ):
+  test_loss = []
+  num_correct = 0
+
+  print( 'Predicting with {} ...'.format(type(model).__name__) )
+
+  # Timer
+  inference_start = time.time()
+
+  # Prep model for *evaluation*
+  model.eval()
+
+  for batch_idx, (data, labels) in tqdm( enumerate(loader, 0), total=len(loader) ):
+    if args.hammerblade:
+      data, labels = data.hammerblade(), labels.hammerblade()
+    outputs = model( data )
     if args.verbose > 1:
-      print(x)
-    return x
+      print( "outputs:" )
+      print( outputs )
+    loss = loss_func( outputs, labels )
+    test_loss.append( loss.item() )
+    pred = outputs.cpu().max( 1 )[ 1 ]
+    num_correct += pred.eq( labels.cpu().view_as(pred) ).sum().item()
 
+    if batch_idx + 1 == args.nbatch:
+      break
+
+  print("--- %s seconds ---" % (time.time() - inference_start))
+
+  test_accuracy = 100. * (num_correct / len( loader.dataset ))
+
+  print( 'Test set: Average loss={:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+      np.mean( test_loss ),
+      num_correct,
+      len( loader.dataset ),
+      test_accuracy
+  ))

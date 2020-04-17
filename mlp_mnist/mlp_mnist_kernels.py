@@ -23,6 +23,8 @@ parser.add_argument('--full-data', default=False, action='store_true',
                     help="run kernels with full data size")
 parser.add_argument('--reduced-data', default=False, action='store_true',
                     help="run kernels with reduced (1/16) data size")
+parser.add_argument('--hammerblade', default=False, action='store_true',
+                    help="run kernels on HammerBlade")
 parser.add_argument('--seed', default=42, type=int,
                     help="manual random seed")
 args = parser.parse_args()
@@ -54,6 +56,12 @@ def addmm(inputs):
   mat1 = torch.randn(M, N)
   mat2 = torch.randn(N, P)
 
+  # Move to HB if necessary
+  if args.hammerblade:
+    self = self.hammerblade()
+    mat1 = mat1.hammerblade()
+    mat2 = mat2.hammerblade()
+
   print("  --- running addmm (%d, %d, %d) ---" % (M, N, P))
 
   # Timer
@@ -71,6 +79,10 @@ def add(inputs):
 
   # Create random inputs
   data = torch.randn(N)
+
+  # Move to HB if necessary
+  if args.hammerblade:
+    data = data.hammerblade()
 
   print("  --- running add (%d) ---" % (N))
 

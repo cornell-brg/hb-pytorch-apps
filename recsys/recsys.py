@@ -2,6 +2,7 @@
 #=========================================================================
 # pytorch-recsys
 # adapted from darpa-sdh-prog-eval/recsys
+# download data from: http://files.grouplens.org/datasets/movielens/ml-10m.zip
 #=========================================================================
 
 import sys

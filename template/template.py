@@ -35,10 +35,10 @@ test_loader  = DataLoader(test_data, batch_size=args.batch_size, num_workers=0)
 #-------------------------------------------------------------------------
 
 """
-class SomeModel(nn.Module):
+class MLPModel(nn.Module):
 
     def __init__(self):
-        super(SomeModel, self).__init__()
+        super(MLPModel, self).__init__()
 
         self.model = nn.Sequential \
         (
@@ -56,55 +56,63 @@ class SomeModel(nn.Module):
 """
 
 #-------------------------------------------------------------------------
-# main
+# Model creation and loading
 #-------------------------------------------------------------------------
 
 """
-if __name__ == "__main__":
+model = MLPModel()
 
-    model = SomeModel()
+# Load pretrained model if necessary
+if args.load_model:
+    model.load_state_dict( torch.load(args.model_filename) )
 
-    # Load pretrained model if necessary
-    if args.load_model:
-      model.load_state_dict( torch.load(args.model_filename) )
+# Move model to HammerBlade if using HB
+if args.hammerblade:
+    model.to( torch.device("hammerblade") )
 
-    # Move model to HammerBlade if using HB
-    if args.hammerblade:
-      model.to( torch.device("hammerblade") )
+print( model )
 
-    print( model )
+# Quit here if dry run
+if args.dry:
+    exit( 0 )
+"""
 
-    # Quit here if dry run
-    if args.dry:
-      exit( 0 )
+#-------------------------------------------------------------------------
+# Training
+#-------------------------------------------------------------------------
 
-    # Training
-    if args.training:
+"""
+if args.training:
 
-      optimizer = torch.optim.SGD( model.parameters(), lr=0.01 )
-      criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.SGD( model.parameters(), lr=0.01 )
+    criterion = nn.CrossEntropyLoss()
 
-      train \
-          (
-             model,
-             train_loader,
-             optimizer,
-             criterion,
-             args
-           )
+    train \
+        (
+           model,
+           train_loader,
+           optimizer,
+           criterion,
+           args
+         )
+"""
 
-    # Inference
-    if args.inference:
+#-------------------------------------------------------------------------
+# Inference
+#-------------------------------------------------------------------------
 
-      criterion = nn.CrossEntropyLoss()
+"""
+if args.inference:
 
-      inference \
-              (
-                model,
-                test_loader,
-                criterion,
-                args
-              )
+    criterion = nn.CrossEntropyLoss()
+
+    inference \
+            (
+              model,
+              test_loader,
+              criterion,
+              args
+            )
 """
 
 #-------------------------------------------------------------------------
@@ -113,5 +121,5 @@ if __name__ == "__main__":
 
 """
 if args.save_model:
-  save_model( model, args.model_filename )
+    save_model( model, args.model_filename )
 """

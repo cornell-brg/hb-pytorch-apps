@@ -11,9 +11,7 @@ import torch.nn as nn
 import numpy as np
 import copy
 import time
-from torch.utils.data     import DataLoader
-from torchvision          import transforms
-from torchvision.datasets import MNIST
+import torchvision
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 import utils

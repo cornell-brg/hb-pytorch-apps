@@ -248,43 +248,40 @@ if args.training:
 if args.inference:
 
     loss = F.binary_cross_entropy_with_logits
+    preds = []
+
+    def collector(outputs, targets):
+        preds.append(outputs.detach().cpu().numpy())
 
     inference(model,
               seq_dataloader,
               loss,
+              collector,
               args)
 
-    """
-    preds = []
-
+    # ---------------------------------------------------------------------
     # Validation
+    # ---------------------------------------------------------------------
+
     if args.validate:
-      preds = np.vstack(preds)
+        preds = np.vstack(preds)
 
-      assert isinstance(preds, np.ndarray)
-      assert preds.shape[0] == len(X_train)
-      assert preds.shape[1] == n_toks
+        assert isinstance(preds, np.ndarray)
+        assert preds.shape[0] == len(X_train)
+        assert preds.shape[1] == n_toks
 
-      X_valid = np.load('%s_valid.npy' % args.cache_path, allow_pickle=True)
-      topk = compute_topk(X_train, preds)
+        X_valid = np.load('%s_valid.npy' % args.cache_path, allow_pickle=True)
+        topk = compute_topk(X_train, preds)
 
-      scores = compute_scores(topk, X_valid)
+        scores = compute_scores(topk, X_valid)
 
-      # --
-      # Log
+        # --
+        # Log
 
-      P_AT_01_THRESHOLD = 0.475
+        P_AT_01_THRESHOLD = 0.475
 
-      print(json.dumps({
-          "status"  : "PASS" if scores[1] >= P_AT_01_THRESHOLD else "FAIL",
-          "p_at_01" : scores[1],
-          "p_at_05" : scores[5],
-          "p_at_10" : scores[10],
-      }))
-
-      does_pass = "PASS" if scores[1] >= P_AT_01_THRESHOLD else "FAIL"
-      print("Validation: " + does_pass)
-      """
+        does_pass = "PASS" if scores[1] >= P_AT_01_THRESHOLD else "FAIL"
+        print("Validation: %s with scores[1] = %f" % (does_pass, scores[1]))
 
 # -------------------------------------------------------------------------
 # Model saving

@@ -138,9 +138,8 @@ def train(model, loader, optimizer, loss_func, args):
 
 
 @torch.no_grad()
-def inference(model, loader, loss_func, args):
+def inference(model, loader, loss_func, collector_func, args):
     test_loss = []
-    num_correct = 0
 
     print('Predicting with {} ...'.format(type(model).__name__))
 
@@ -160,8 +159,7 @@ def inference(model, loader, loss_func, args):
             print(outputs)
         loss = loss_func(outputs, labels)
         test_loss.append(loss.item())
-        pred = outputs.cpu().max(1)[1]
-        num_correct += pred.eq(labels.cpu().view_as(pred)).sum().item()
+        collector_func(outputs, labels)
 
         if batch_idx + 1 == args.nbatch:
             break
@@ -170,9 +168,4 @@ def inference(model, loader, loss_func, args):
 
     test_accuracy = 100. * (num_correct / len(loader.dataset))
 
-    print('Test set: Average loss={:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        np.mean(test_loss),
-        num_correct,
-        len(loader.dataset),
-        test_accuracy
-    ))
+    print('Test set: Average loss={:.4f}'.format(np.mean( test_loss )))

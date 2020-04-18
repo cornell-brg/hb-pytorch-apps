@@ -109,7 +109,7 @@ def train(model, loader, optimizer, loss_func, args):
         losses = []
 
         for batch_idx, (data, labels) in \
-            tqdm(enumerate(loader, 0), total=len(loader)):
+                tqdm(enumerate(loader, 0), total=len(loader)):
             if args.hammerblade:
                 data, labels = data.hammerblade(), labels.hammerblade()
             optimizer.zero_grad()
@@ -151,7 +151,7 @@ def inference(model, loader, loss_func, args):
     model.eval()
 
     for batch_idx, (data, labels) in \
-        tqdm(enumerate(loader, 0), total=len(loader)):
+            tqdm(enumerate(loader, 0), total=len(loader)):
         if args.hammerblade:
             data, labels = data.hammerblade(), labels.hammerblade()
         outputs = model(data)

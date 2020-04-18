@@ -1,10 +1,22 @@
 """
-Small 5-layer CNN workload
+5-layer CNN workload
 03/16/2020 Bandhav Veluri
 """
 
+import sys
+import os
+import numpy as np
 import torch
 import torch.nn as nn
+import numpy as np
+import copy
+import time
+from torch.utils.data     import DataLoader
+from torchvision          import transforms
+from torchvision.datasets import MNIST
+
+sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+import utils
 
 class LeNet5(nn.Module):
     """
@@ -38,3 +50,67 @@ class LeNet5(nn.Module):
         x = x.view(x.shape[0], -1)
         x = self.fc(x)
         return x
+
+def extra_arg_parser(parser):
+    parser.add_argument('--lr', default=0.02, type=int,
+                        help="learning rate")
+    parser.add_argument('--momentum', default=0.9, type=int,
+                        help="momentum")
+
+if __name__ == "__main__":
+    # Parse arguments
+    args = utils.parse_model_args(extra_arg_parser)
+
+    # Model & hyper-parameters
+    BATCH_SIZE = args.nbatch
+    LEARNING_RATE = args.lr
+    MOMENTUM = args.momentum
+    EPOCHS = args.nepoch
+
+    net = LeNet5()
+
+    optimizer = torch.optim.SGD(
+        net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
+
+    loss_func = nn.CrossEntropyLoss()
+
+    # Data
+    transforms = torchvision.transforms.Compose([
+        torchvision.transforms.Resize((32,32)),
+        torchvision.transforms.ToTensor()])
+    
+    trainset = torchvision.datasets.MNIST(
+        root='./data', train=True, download=True, transform=transforms)
+    trainloader = torch.utils.data.DataLoader(
+        trainset, batch_size=args.nbatch, shuffle=True, num_workers=0)
+
+    testset = torchvision.datasets.MNIST(
+        root='./data', train=False, download=True, transform=transforms)
+    testloader = torch.utils.data.DataLoader(
+        testset, batch_size=args.nbatch, shuffle=False, num_workers=0)
+
+    # Load pretrained model if necessary
+    if args.load_model:
+        model.load_state_dict(torch.load(args.model_filename))
+    
+    # Move model to HammerBlade if using HB
+    if args.hammerblade:
+        model.to(torch.device("hammerblade"))
+    
+    print(model)
+  
+    # Quit here if dry run
+    if args.dry:
+        exit(0)
+
+    # Training
+    if args.training: 
+        train(model, train_loader, optimizer, loss_func, args)
+    
+    # Inference
+    if args.inference:
+        inference(model, test_loader, loss_func, args)
+    
+    # Save model
+    if args.save_model:
+        save_model(model, args.model_filename)

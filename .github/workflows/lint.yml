@@ -1,0 +1,116 @@
+name: Lint
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  quick-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+          architecture: x64
+      - name: Checkout PyTorch
+        uses: actions/checkout@v1
+      - name: Ensure consistent CircleCI YAML config
+        run: |
+          pip install -r requirements.txt
+          cd .circleci && ./ensure-consistency.py
+      - name: Ensure Docker version is correctly deployed
+        run: .circleci/validate-docker-version.py
+      - name: Shellcheck Jenkins scripts
+        run: |
+          sudo apt-get install -y shellcheck
+          .jenkins/run-shellcheck.sh
+      - name: Ensure no tabs
+        run: |
+          (! git grep -I -l $'\t' -- . ':(exclude)*.svg' ':(exclude)**Makefile' ':(exclude)**/contrib/**' ':(exclude)third_party' ':(exclude).gitattributes' ':(exclude).gitmodules' ':(exclude)*.mk' || (echo "The above files have tabs; please convert them to spaces"; false))
+      - name: Ensure C++ source files are not executable
+        run: |
+          (! find . \( -path ./third_party -o -path ./.git -o -path ./torch/bin -o -path ./build \) -prune -o -type f -executable -regextype posix-egrep -not -regex '.+(\.(bash|sh|py|so)|git-pre-commit)$' -print | grep . || (echo 'The above files have executable permission; please remove their executable permission by using `chmod -x`'; false))
+      - name: MyPy typecheck
+        run: |
+          pip install mypy mypy-extensions
+          mypy @mypy-files.txt
+      - name: C++ docs check
+        run: |
+          sudo apt-get install -y doxygen && pip install -r requirements.txt
+          cd docs/cpp/source && ./check-doxygen.sh
+
+  flake8-py3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+          architecture: x64
+      - name: Fetch PyTorch
+        uses: actions/checkout@v1
+      - name: Checkout PR tip
+        run: |
+          set -eux
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # We are on a PR, so actions/checkout leaves us on a merge commit.
+            # Check out the actual tip of the branch.
+            git checkout ${{ github.event.pull_request.head.sha }}
+          fi
+          echo ::set-output name=commit_sha::$(git rev-parse HEAD)
+        id: get_pr_tip
+      - name: Run flake8
+        run: |
+          set -eux
+          pip install flake8
+          flake8 --exit-zero > ${GITHUB_WORKSPACE}/flake8-output.txt
+          cat ${GITHUB_WORKSPACE}/flake8-output.txt
+      - name: Add annotations
+        uses: pytorch/add-annotations-github-action@master
+        with:
+          check_name: 'flake8-py3'
+          linter_output_path: 'flake8-output.txt'
+          commit_sha: ${{ steps.get_pr_tip.outputs.commit_sha }}
+          regex: '^(?<filename>.*?):(?<lineNumber>\d+):(?<columnNumber>\d+): (?<errorCode>\w\d+) (?<errorDesc>.*)'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  flake8-py2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 2.x
+          architecture: x64
+      - name: Fetch PyTorch
+        uses: actions/checkout@v1
+      - name: Checkout PR tip
+        run: |
+          set -eux
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # We are on a PR, so actions/checkout leaves us on a merge commit.
+            # Check out the actual tip of the branch.
+            git checkout ${{ github.event.pull_request.head.sha }}
+          fi
+          echo ::set-output name=commit_sha::$(git rev-parse HEAD)
+        id: get_pr_tip
+      - name: Run flake8
+        run: |
+          set -eux
+          pip install flake8
+          rm -rf .circleci
+          flake8 --exit-zero > ${GITHUB_WORKSPACE}/flake8-output.txt
+          cat ${GITHUB_WORKSPACE}/flake8-output.txt
+      - name: Add annotations
+        uses: pytorch/add-annotations-github-action@master
+        with:
+          check_name: 'flake8-py2'
+          linter_output_path: 'flake8-output.txt'
+          commit_sha: ${{ steps.get_pr_tip.outputs.commit_sha }}
+          regex: '^(?<filename>.*?):(?<lineNumber>\d+):(?<columnNumber>\d+): (?<errorCode>\w\d+) (?<errorDesc>.*)'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

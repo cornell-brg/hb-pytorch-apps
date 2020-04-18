@@ -166,6 +166,4 @@ def inference(model, loader, loss_func, collector_func, args):
 
     print("--- %s seconds ---" % (time.time() - inference_start))
 
-    test_accuracy = 100. * (num_correct / len(loader.dataset))
-
     print('Test set: Average loss={:.4f}'.format(np.mean( test_loss )))

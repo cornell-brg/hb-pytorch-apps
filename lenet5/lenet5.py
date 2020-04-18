@@ -5,16 +5,14 @@
 
 import sys
 import os
-import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
-import copy
-import time
 import torchvision
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+
 import utils
+
 
 class LeNet5(nn.Module):
     """
@@ -23,6 +21,7 @@ class LeNet5(nn.Module):
     https://cs.nyu.edu/~yann/2010f-G22-2565-001/diglib/lecun-98.pdf
     (Page 7)
     """
+
     def __init__(self):
         super(LeNet5, self).__init__()
 
@@ -49,11 +48,13 @@ class LeNet5(nn.Module):
         x = self.fc(x)
         return x
 
+
 def extra_arg_parser(parser):
     parser.add_argument('--lr', default=0.02, type=int,
                         help="learning rate")
     parser.add_argument('--momentum', default=0.9, type=int,
                         help="momentum")
+
 
 if __name__ == "__main__":
     # Parse arguments
@@ -73,9 +74,9 @@ if __name__ == "__main__":
 
     # Data
     transforms = torchvision.transforms.Compose([
-        torchvision.transforms.Resize((32,32)),
+        torchvision.transforms.Resize((32, 32)),
         torchvision.transforms.ToTensor()])
-    
+
     trainset = torchvision.datasets.MNIST(
         root='./data', train=True, download=True, transform=transforms)
     trainloader = torch.utils.data.DataLoader(
@@ -89,25 +90,25 @@ if __name__ == "__main__":
     # Load pretrained model if necessary
     if args.load_model:
         model.load_state_dict(torch.load(args.model_filename))
-    
+
     # Move model to HammerBlade if using HB
     if args.hammerblade:
         model.to(torch.device("hammerblade"))
-    
+
     print(model)
-  
+
     # Quit here if dry run
     if args.dry:
         exit(0)
 
     # Training
-    if args.training: 
+    if args.training:
         utils.train(model, trainloader, optimizer, loss_func, args)
-    
+
     # Inference
     if args.inference:
         utils.inference(model, testloader, loss_func, args)
-    
+
     # Save model
     if args.save_model:
         utils.save_model(model, args.model_filename)

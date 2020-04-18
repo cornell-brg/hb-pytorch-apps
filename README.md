@@ -1,3 +1,12 @@
+![PyTorch Logo](https://github.com/pytorch/pytorch/blob/master/docs/source/_static/img/pytorch-logo-dark.png)
+
+--------------------------------------------------------------------------------
+### This repo hosts workloads for [PyTorch HammerBlade port](https://github.com/cornell-brg/hb-pytorch)
+
+## Ported Workloads
+ - Multilayer Perceptron for MNIST ([mlp_mnist](https://github.com/cornell-brg/pytorch-apps/tree/master/mlp_mnist))
+ - Autoencoder Based Recommendation ([Recsys](https://github.com/cornell-brg/pytorch-apps/tree/master/recsys))
+
 ## kernel developer flow
  - 1. identify a kernel to port
  - 2. (possibly) register the kernel with PyTorch

@@ -9,7 +9,6 @@ import numpy as np
 import random
 import time
 import torch
-import torch.nn as nn
 from tqdm import tqdm
 
 
@@ -87,7 +86,7 @@ def save_model(model, model_filename):
     print("Saving model to " + model_filename)
     model_cpu = copy.deepcopy(model)
     model_cpu.to(torch.device("cpu"))
-    torch.save(model_cpu.state_dict(), save_filename)
+    torch.save(model_cpu.state_dict(), model_filename)
 
 # -------------------------------------------------------------------------
 # Common training routine
@@ -109,10 +108,10 @@ def train(model, loader, optimizer, loss_func, args):
     for epoch in range(args.nepoch):
         losses = []
 
-        for batch_idx, (data, labels) in tqdm(enumerate(loader, 0), total=len(loader)):
+        for batch_idx, (data, labels) in \
+            tqdm(enumerate(loader, 0), total=len(loader)):
             if args.hammerblade:
                 data, labels = data.hammerblade(), labels.hammerblade()
-            batch_size = len(data)
             optimizer.zero_grad()
             outputs = model(data)
             if args.verbose > 1:
@@ -151,7 +150,8 @@ def inference(model, loader, loss_func, args):
     # Prep model for *evaluation*
     model.eval()
 
-    for batch_idx, (data, labels) in tqdm(enumerate(loader, 0), total=len(loader)):
+    for batch_idx, (data, labels) in \
+        tqdm(enumerate(loader, 0), total=len(loader)):
         if args.hammerblade:
             data, labels = data.hammerblade(), labels.hammerblade()
         outputs = model(data)

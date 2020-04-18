@@ -1,5 +1,7 @@
-# Helper functions for PyTorch-Apps
-# 04/17/2020 Bandhav Veluri, Lin Cheng
+"""
+Helper functions for PyTorch-Apps
+04/17/2020 Bandhav Veluri, Lin Cheng
+"""
 
 import argparse
 import copy
@@ -10,13 +12,13 @@ import torch
 import torch.nn as nn
 from tqdm import tqdm
 
-#-------------------------------------------------------------------------
-# Parse command line options.
-# If a workload has options that are specific to it, it should pass in a
-# function which adds those arguments
-#-------------------------------------------------------------------------
-
 def parse_model_args( workload_args=None ):
+    """
+    Parse command line options.
+    If a workload has options that are specific to it, it should pass in a
+    function which adds those arguments
+    """
+
     parser = argparse.ArgumentParser( formatter_class=argparse.ArgumentDefaultsHelpFormatter )
 
     # Common options

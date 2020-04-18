@@ -65,7 +65,6 @@ if __name__ == "__main__":
     BATCH_SIZE = args.nbatch
     LEARNING_RATE = args.lr
     MOMENTUM = args.momentum
-    EPOCHS = args.nepoch
 
     net = LeNet5()
 
@@ -82,12 +81,12 @@ if __name__ == "__main__":
     trainset = torchvision.datasets.MNIST(
         root='./data', train=True, download=True, transform=transforms)
     trainloader = torch.utils.data.DataLoader(
-        trainset, batch_size=args.nbatch, shuffle=True, num_workers=0)
+        trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
 
     testset = torchvision.datasets.MNIST(
         root='./data', train=False, download=True, transform=transforms)
     testloader = torch.utils.data.DataLoader(
-        testset, batch_size=args.nbatch, shuffle=False, num_workers=0)
+        testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
 
     # Load pretrained model if necessary
     if args.load_model:

@@ -17,30 +17,6 @@ from utils import parse_model_args, train, inference, save_model
 """
 
 # -------------------------------------------------------------------------
-# Parse command line arguments
-# -------------------------------------------------------------------------
-
-"""
-args = parse_model_args()
-"""
-
-# -------------------------------------------------------------------------
-# Prepare Dataset
-# -------------------------------------------------------------------------
-
-"""
-train_data = MNIST('./data', train=True, download=True,
-                   transform=transforms.ToTensor())
-test_data = MNIST('./data', train=False, download=True,
-                  transform=transforms.ToTensor())
-
-train_loader = DataLoader(train_data, batch_size=args.batch_size,
-                          num_workers=0)
-test_loader = DataLoader(test_data, batch_size=args.batch_size,
-                         num_workers=0)
-"""
-
-# -------------------------------------------------------------------------
 # Multilayer Preception for MNIST
 # -------------------------------------------------------------------------
 
@@ -63,63 +39,97 @@ class MLPModel(nn.Module):
 """
 
 # -------------------------------------------------------------------------
-# Model creation and loading
+# Workload specific command line arguments
 # -------------------------------------------------------------------------
 
 """
-model = MLPModel()
-
-# Load pretrained model if necessary
-if args.load_model:
-    model.load_state_dict(torch.load(args.model_filename))
-
-# Move model to HammerBlade if using HB
-if args.hammerblade:
-    model.to(torch.device("hammerblade"))
-
-print(model)
-
-# Quit here if dry run
-if args.dry:
-    exit(0)
+def extra_arg_parser(parser):
+    parser.add_argument('--lr', default=0.01, type=int,
+                        help="learning rate")
 """
 
-# -------------------------------------------------------------------------
-# Training
-# -------------------------------------------------------------------------
+if __name__ == "__main__":
+    # -------------------------------------------------------------------------
+    # Parse command line arguments
+    # -------------------------------------------------------------------------
 
-"""
-if args.training:
+    """
+    args = parse_model_args(extra_arg_parser)
+    """
 
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+    # -------------------------------------------------------------------------
+    # Prepare Dataset
+    # -------------------------------------------------------------------------
+
+    """
+    train_data = MNIST('./data', train=True, download=True,
+                       transform=transforms.ToTensor())
+    test_data = MNIST('./data', train=False, download=True,
+                      transform=transforms.ToTensor())
+
+    train_loader = DataLoader(train_data, batch_size=args.batch_size,
+                              num_workers=0)
+    test_loader = DataLoader(test_data, batch_size=args.batch_size,
+                             num_workers=0)
+    """
+
+    # -------------------------------------------------------------------------
+    # Model creation and loading
+    # -------------------------------------------------------------------------
+
+    """
+    LEARNING_RATE = args.lr
+    model = MLPModel()
+
+    optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
     criterion = nn.CrossEntropyLoss()
 
-    train(model,
-          train_loader,
-          optimizer,
-          criterion,
-          args)
-"""
+    # Load pretrained model if necessary
+    if args.load_model:
+        model.load_state_dict(torch.load(args.model_filename))
 
-# -------------------------------------------------------------------------
-# Inference
-# -------------------------------------------------------------------------
+    # Move model to HammerBlade if using HB
+    if args.hammerblade:
+        model.to(torch.device("hammerblade"))
 
-"""
-if args.inference:
+    print(model)
 
-    criterion = nn.CrossEntropyLoss()
+    # Quit here if dry run
+    if args.dry:
+        exit(0)
+    """
 
-    inference(model,
-              test_loader,
+    # -------------------------------------------------------------------------
+    # Training
+    # -------------------------------------------------------------------------
+
+    """
+    if args.training:
+
+        train(model,
+              train_loader,
+              optimizer,
               criterion,
               args)
-"""
+    """
 
-# -------------------------------------------------------------------------
-# Model saving
-# -------------------------------------------------------------------------
-"""
-if args.save_model:
-    save_model(model, args.model_filename)
-"""
+    # -------------------------------------------------------------------------
+    # Inference
+    # -------------------------------------------------------------------------
+
+    """
+    if args.inference:
+
+        inference(model,
+                  test_loader,
+                  criterion,
+                  args)
+    """
+
+    # -------------------------------------------------------------------------
+    # Model saving
+    # -------------------------------------------------------------------------
+    """
+    if args.save_model:
+        save_model(model, args.model_filename)
+    """

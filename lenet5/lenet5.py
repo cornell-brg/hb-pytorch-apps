@@ -60,14 +60,14 @@ if __name__ == "__main__":
     args = utils.parse_model_args(extra_arg_parser)
 
     # Model & hyper-parameters
-    BATCH_SIZE = args.nbatch
+    BATCH_SIZE = args.batch_size
     LEARNING_RATE = args.lr
     MOMENTUM = args.momentum
 
-    net = LeNet5()
+    model = LeNet5()
 
     optimizer = torch.optim.SGD(
-        net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
+        model.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
     loss_func = nn.CrossEntropyLoss()
 
@@ -102,12 +102,12 @@ if __name__ == "__main__":
 
     # Training
     if args.training: 
-        train(model, train_loader, optimizer, loss_func, args)
+        utils.train(model, trainloader, optimizer, loss_func, args)
     
     # Inference
     if args.inference:
-        inference(model, test_loader, loss_func, args)
+        utils.inference(model, testloader, loss_func, args)
     
     # Save model
     if args.save_model:
-        save_model(model, args.model_filename)
+        utils.save_model(model, args.model_filename)

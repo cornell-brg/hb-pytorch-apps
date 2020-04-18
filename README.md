@@ -2,19 +2,23 @@
 
 --------------------------------------------------------------------------------
 ### This repo hosts workloads for [PyTorch HammerBlade port](https://github.com/cornell-brg/hb-pytorch)
+### You may refer to the [template workload](https://github.com/cornell-brg/pytorch-apps/blob/master/template/template.py) as a code style guideline ;)
 
 ## Ported Workloads
  - Multilayer Perceptron for MNIST ([mlp_mnist](https://github.com/cornell-brg/pytorch-apps/tree/master/mlp_mnist))
  - Autoencoder Based Recommendation ([Recsys](https://github.com/cornell-brg/pytorch-apps/tree/master/recsys))
 
 ## kernel developer flow
+----------------
   1. identify a kernel to port
   2. (possibly) register the kernel with PyTorch
   3. add host code, tests, kernel device code
   4. test using emulation
   5. test using cosim
   6. optimize
+  
 ## workload developer flow
+-----------------
    1. identify a workload to port
    2. develop workload in pytorch-apps following coding conventions
    3. test serial native version (determine kernels not ported to HB)

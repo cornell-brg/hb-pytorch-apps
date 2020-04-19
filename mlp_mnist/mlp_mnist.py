@@ -119,11 +119,9 @@ if __name__ == "__main__":
 
         num_correct = [0]
 
-
         def collector(outputs, targets):
             pred = outputs.cpu().max(1)[1]
             num_correct[0] += pred.eq(targets.cpu().view_as(pred)).sum().item()
-
 
         inference(model,
                   test_loader,
@@ -135,9 +133,9 @@ if __name__ == "__main__":
         test_accuracy = 100. * (num_correct / len(test_loader.dataset))
 
         print('Test set: Accuracy: {}/{} ({:.0f}%)\n'.format(
-          num_correct,
-          len(test_loader.dataset),
-          test_accuracy
+            num_correct,
+            len(test_loader.dataset),
+            test_accuracy
         ))
 
     # ---------------------------------------------------------------------

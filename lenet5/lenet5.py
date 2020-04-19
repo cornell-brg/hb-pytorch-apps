@@ -107,7 +107,23 @@ if __name__ == "__main__":
 
     # Inference
     if args.inference:
-        utils.inference(model, testloader, loss_func, args)
+
+        num_correct = [0]
+
+        def collector(outputs, targets):
+            pred = outputs.cpu().max(1)[1]
+            num_correct[0] += pred.eq(targets.cpu().view_as(pred)).sum().item()
+
+        utils.inference(model, testloader, loss_func, collector, args)
+
+        num_correct = num_correct[0]
+        test_accuracy = 100. * (num_correct / len(testloader.dataset))
+
+        print('Test set: Accuracy: {}/{} ({:.0f}%)\n'.format(
+            num_correct,
+            len(testloader.dataset),
+            test_accuracy
+        ))
 
     # Save model
     if args.save_model:

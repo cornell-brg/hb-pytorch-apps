@@ -1,14 +1,12 @@
-#!/bin/python
-#=========================================================================
-# Key kernels of MLP MNIST in isolation
-# 04/17/2020 Lin Cheng (lc873@cornell.edu)
-#=========================================================================
+"""
+Key kernels of MLP MNIST in isolation
+04/17/2020 Lin Cheng (lc873@cornell.edu)
+"""
 
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
-import torch
 import kernels_utils as ku
 
 # -------------------------------------------------------------------------
@@ -84,18 +82,17 @@ if __name__ == "__main__":
     # Load kernels
     # -------------------------------------------------------------------------
 
-
     key_kernels = ku.create_kernel_wrapper(key_kernels)
 
     # By default, run all kernels
     if args.kernels == '':
         args.kernels = key_kernels.keys()
     else:
-    # Parse which kernels to run
+        # Parse which kernels to run
         args.kernels = args.kernels.split(",")
 
     for k in args.kernels:
-        if not k in key_kernels:
+        if k not in key_kernels:
             print("ERROR: unrecognized kernel -- %s" % (k))
             exit(1)
 

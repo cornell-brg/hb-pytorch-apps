@@ -149,11 +149,12 @@ def add(inputs, hammerblade):
 # Create app kernel wrapper
 # -------------------------------------------------------------------------
 
+
 def create_kernel_wrapper(key_kernels):
     kernels = {}
     for name in key_kernels.keys():
-        kernel_impl  = key_kernels[name]["kernel_impl"]
-        full_data    = key_kernels[name]["full_data"]
+        kernel_impl = key_kernels[name]["kernel_impl"]
+        full_data = key_kernels[name]["full_data"]
         reduced_data = key_kernels[name]["reduced_data"]
         kernels[name] = KeyKernel(name, kernel_impl, full_data, reduced_data)
     return kernels

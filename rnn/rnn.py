@@ -101,9 +101,14 @@ if __name__ == "__main__":
     # Prepare Dataset
     # ---------------------------------------------------------------------
 
-    train_data, valid_data = fetch_data() 
+    train_data, valid_data = fetch_data()
+
+    EMBEDDING_DIM = args.ed 
 
     vocab = set()
+
+    # use to create embedding for unknown words during inference
+    vocab.add("unk")
     for document, _ in train_data:
         for word in document:
             vocab.add(word)
@@ -114,7 +119,7 @@ if __name__ == "__main__":
     for index, word in enumerate(vocab_list):
         word2index[word] = index 
 
-    embeds = nn.Embeddings(len(word2index), EMBEDDING_DIM)
+    embeds = nn.Embedding(len(word2index), EMBEDDING_DIM)
 
     # ---------------------------------------------------------------------
     # Model creation and loading
@@ -124,7 +129,7 @@ if __name__ == "__main__":
     LEARNING_RATE = args.lr
     HIDDEN_DIM = args.hd
 
-    model = RNN(embedding_dim, hidden_size = HIDDEN_DIM, vocab_size= len(vocab), output_size = 5)
+    model = RNN(EMBEDDING_DIM, hidden_size = HIDDEN_DIM, vocab_size= len(vocab), output_size = 5)
 
     # changing these parameters will effect accuracy of model
     optimizer = optim.SGD(model.parameters(),lr=LEARNING_RATE, momentum=0.9)
@@ -153,7 +158,7 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------
 
     if args.training:
-
+        print("training")
         EPOCHS = args.nepoch
 
 
@@ -163,11 +168,8 @@ if __name__ == "__main__":
 
                 inp = []
                 targets = []
-
-                #adds word embedding corresponding to inp words to inp
-                #if word not in pretrained embeddings assign zero vec
                 for w in sent:
-                   inp.append(embeds(torch.tensor([word2index[w]], dtype=torch.long)))
+                   inp.append(embeds(torch.tensor(word2index[w], dtype=torch.long)))
 
                 output, hidden = model(inp)
 
@@ -184,7 +186,7 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------
 
     if args.inference:
-
+        print("started inference")
         y_pred = []
         y_actual = []
         model.train(False)
@@ -194,10 +196,10 @@ if __name__ == "__main__":
                 inp = []
 
                 for w in sent[0]:
-                    try:
-                        inp.append(torch.tensor(w2v[w]))
-                    except KeyError:
-                        inp.append(torch.zeros(embedding_dim))
+                    if w in vocab:
+                        inp.append(embeds(torch.tensor(word2index[w], dtype=torch.long)))
+                    else:
+                        inp.append(embeds(torch.tensor(word2index["unk"], dtype=torch.long)))
 
                 class_scores, hidden = model(inp)
                 y_pred.append(str(class_scores.max(dim=1)[1].numpy()[0]))

@@ -1,7 +1,6 @@
 """
 RNN model used to predict number of "stars" (1-5) given a corresponding yelp review
-Model uses pytorch nn.RNN
-utilizes pretrained word2vec word embeddings from GoogleNews 
+Model uses pytorch nn.RNN 
 helpful links: https://blog.floydhub.com/a-beginners-guide-on-recurrent-neural-networks-with-pytorch/
 https://pytorch.org/docs/stable/nn.html
 
@@ -22,11 +21,7 @@ import torch.optim as optim
 import math
 import random
 import json
-import gensim
-from torch.utils.data import DataLoader
-from torchvision import transforms
 from utils import parse_model_args, train, inference, save_model
-from gensim.models import Word2Vec, KeyedVectors
 from sklearn.metrics import accuracy_score
 
 # -------------------------------------------------------------------------
@@ -67,35 +62,13 @@ class RNN(nn.Module):
 def extra_arg_parser(parser):
     parser.add_argument('--lr', default=0.01, type=int,
                         help="learning rate")
+
     parser.add_argument('--hd', default=10, type=int,
                         help="hidden dimension")
 
- 
+    parser.add_argument('--ed', default=10, type=int,
+                        help="embedding dimension")
 
-
-
-#returns: 
-# vocab = A set of strings corresponding to the vocabulary
-def make_vocab(data):
-    vocab = set()
-    for document, _ in data:
-        for word in document:
-            vocab.add(word)
-    return vocab 
-
-
-# Returns:
-# vocab = A set of strings corresponding to the vocabulary
-# word2index = A dictionary mapping word/token to its index (a number in 0, ..., V - 1)
-# index2word = A dictionary inverting the mapping of word2index
-def make_indices(vocab):
-    vocab_list = sorted(vocab)
-    word2index = {}
-    index2word = {}
-    for index, word in enumerate(vocab_list):
-        word2index[word] = index 
-        index2word[index] = word 
-    return vocab, word2index, index2word 
 
 def fetch_data():
     with open('training.json') as training_f:
@@ -130,15 +103,18 @@ if __name__ == "__main__":
 
     train_data, valid_data = fetch_data() 
 
-    vocab = make_vocab(train_data)
-    vocab, word2index, index2word = make_indices(vocab)
+    vocab = set()
+    for document, _ in train_data:
+        for word in document:
+            vocab.add(word)
 
-    # this is dim on pretrained embeddings
-    embedding_dim = 300
+    vocab_list = sorted(vocab)
 
-    #alternative embedddings knowledge-vectors-skipgram1000.bin
-    # GoogleNews-vectors-negative300.bin
-    w2v = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+    word2index = {}
+    for index, word in enumerate(vocab_list):
+        word2index[word] = index 
+
+    embeds = nn.Embeddings(len(word2index), EMBEDDING_DIM)
 
     # ---------------------------------------------------------------------
     # Model creation and loading
@@ -191,10 +167,7 @@ if __name__ == "__main__":
                 #adds word embedding corresponding to inp words to inp
                 #if word not in pretrained embeddings assign zero vec
                 for w in sent:
-                    try:
-                        inp.append(torch.tensor(w2v[w]))
-                    except KeyError:
-                        inp.append(torch.zeros(embedding_dim))
+                   inp.append(embeds(torch.tensor([word2index[w]], dtype=torch.long)))
 
                 output, hidden = model(inp)
 

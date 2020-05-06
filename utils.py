@@ -125,6 +125,15 @@ def train(model, loader, optimizer, loss_func, args):
             if (args.nbatch is not None) and (batch_idx + 1 >= args.nbatch):
                 break
 
+            if batch_idx % 100 == 0:
+                print('epoch {} : batch ({}/{}) Loss={:.6f}\n'.format(
+                    epoch,
+                    batch_idx,
+                    len(loader),
+                    loss
+                ))
+
+
         print('epoch {} : Average Loss={:.6f}\n'.format(
             epoch,
             np.mean(losses)

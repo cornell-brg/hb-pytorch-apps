@@ -1,19 +1,23 @@
 import numpy
 import scipy.sparse
 from scipy.spatial.distance import cdist
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+from utils import parse_model_args, train, inference, save_model  # noqa
 
 # Kernel parameters.
 N_DOCS = 5000
 QUERY_IDX = 100
 LAMBDA = 1
-NUM_ITERS = 16
 
 # Data files. (Ask Adrian for these.)
 DATA_MAT = 'data/cache-mat.npz'
 DATA_VECS = 'data/cache-vecs.npy'
 
 
-def sinkhorn_wmd(r, c, vecs):
+def swmd_numpy(r, c, vecs, niters):
     # I=(r > 0)
     sel = r.squeeze() > 0
 
@@ -35,7 +39,7 @@ def sinkhorn_wmd(r, c, vecs):
 
     # This version uses a fixed number of iterations instead of running
     # until convergence.
-    for it in range(NUM_ITERS):
+    for it in range(niters):
         print('starting iteration {}'.format(it))
 
         u = 1.0 / x
@@ -53,7 +57,14 @@ def sinkhorn_wmd(r, c, vecs):
     return out
 
 
+def add_args(parser):
+    parser.add_argument('-n', '--niters', default=16, type=int,
+                        help="number of iterations")
+
+
 if __name__ == "__main__":
+    args = parse_model_args(add_args)
+
     # Load data.
     vecs = numpy.load(DATA_VECS)
     mat = scipy.sparse.load_npz(DATA_MAT)
@@ -63,7 +74,8 @@ if __name__ == "__main__":
     r = numpy.asarray(mat[:, QUERY_IDX].todense()).squeeze()
 
     # The kernel itself.
-    scores = sinkhorn_wmd(r, mat, vecs)
+    scores = swmd_numpy(r, mat, vecs,
+                        niters=args.niters)
 
     # Dump output.
     numpy.savetxt('scores_out.txt', scores, fmt='%.8e')

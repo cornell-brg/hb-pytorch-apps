@@ -60,6 +60,8 @@ def swmd_numpy(r, c, vecs, niters):
 def add_args(parser):
     parser.add_argument('-n', '--niters', default=16, type=int,
                         help="number of iterations")
+    parser.add_argument('-d', '--dump', default=False, type=bool,
+                        help="dump result to a file")
 
 
 if __name__ == "__main__":
@@ -78,4 +80,5 @@ if __name__ == "__main__":
                         niters=args.niters)
 
     # Dump output.
-    numpy.savetxt('scores_out.txt', scores, fmt='%.8e')
+    if args.dump:
+        numpy.savetxt('scores_out.txt', scores, fmt='%.8e')

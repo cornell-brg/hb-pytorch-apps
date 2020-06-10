@@ -74,6 +74,16 @@ def _sparse_sample(indices, tensor):
     )
 
 
+def _sdmp(a, b):
+    """Sparse/dense matrix product.
+    """
+    out = torch.Tensor(torch.Size((a.shape[0], b.shape[1])))
+    for i in range(out.shape[0]):
+        for j in range(out.shape[1]):
+            for k in range(a.shape[1]):
+                out[i, j] = a[i, k] * b[k, j]
+
+
 def swmd_torch(r, c, vecs, niters):
     # Convert arrays to PyTorch tensors.
     r = torch.FloatTensor(r)
@@ -117,9 +127,9 @@ def swmd_torch(r, c, vecs, niters):
         # sparse first.
         v = c * _sparse_sample(c._indices(), one_over_K_T_times_u)
 
-        # What we really want here is `K_div_r @ v`, but PyTorch does not
-        # support dense/sparse matrix multiply (only sparse/dense).
-        x = K_div_r @ v
+        # PyTorch doesn't support dense/sparse matrix multiply (only
+        # sparse/dense), so I had to write my own. :'(
+        x = _sdmp(K_div_r, v)
 
     out = (u * ((K * M) @ v)).sum(axis=0)
     return out

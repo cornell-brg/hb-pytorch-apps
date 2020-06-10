@@ -83,6 +83,7 @@ def _dsmp(a, b):
         bx = b._values()[k]
         for i in range(a.shape[0]):
             out[i, bj] += a[i, bi] * bx
+    return out
 
 
 def swmd_torch(r, c, vecs, niters):

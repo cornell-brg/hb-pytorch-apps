@@ -74,8 +74,8 @@ def _sparse_sample(indices, tensor):
     )
 
 
-def _sdmp(a, b):
-    """Sparse/dense matrix product.
+def _dsmp(a, b):
+    """Dense/sparse matrix product.
     """
     out = torch.zeros((a.shape[0], b.shape[1]))
     for k in range(b._nnz()):
@@ -130,9 +130,9 @@ def swmd_torch(r, c, vecs, niters):
 
         # PyTorch doesn't support dense/sparse matrix multiply (only
         # sparse/dense), so I had to write my own. :'(
-        x = _sdmp(K_div_r, v)
+        x = _dsmp(K_div_r, v)
 
-    out = (u * _sdmp(K * M, v)).sum(axis=0)
+    out = (u * _dsmp(K * M, v)).sum(axis=0)
     return out
 
 

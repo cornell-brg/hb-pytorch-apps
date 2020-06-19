@@ -144,6 +144,8 @@ def add_args(parser):
                         help="dump result to a file")
     parser.add_argument('-p', '--numpy', default=False, action='store_true',
                         help="use NumPy version instead of PyTorch")
+    parser.add_argument('-c', '--compare', default=False, action='store_true',
+                        help="compare NumPy and PyTorch output")
 
 
 if __name__ == "__main__":
@@ -159,9 +161,18 @@ if __name__ == "__main__":
     r = numpy.asarray(mat[:, QUERY_IDX].todense()).squeeze()
 
     # The kernel itself.
-    kernel = swmd_numpy if args.numpy else swmd_torch
-    scores = kernel(r, mat, vecs,
-                    niters=args.niters)
+    if args.compare:
+        print('starting numpy')
+        scores_numpy = swmd_numpy(r, mat, vecs,
+                                  niters=args.niters)
+        print('starting torch')
+        scores_torch = swmd_numpy(r, mat, vecs,
+                                  niters=args.niters)
+        print('done')
+    else:
+        kernel = swmd_numpy if args.numpy else swmd_torch
+        scores = kernel(r, mat, vecs,
+                        niters=args.niters)
 
     # Dump output.
     if args.dump:

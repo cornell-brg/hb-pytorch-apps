@@ -58,22 +58,6 @@ def swmd_numpy(r, c, vecs, niters):
     return out
 
 
-def _sparse_sample(indices, tensor):
-    """Get the values of a dense `tensor` at the given `indices`
-    (specified the same way as a sparse PyTorch tensor).
-    """
-    length = indices.shape[1]
-    values = torch.Tensor(length)
-    for i in range(length):
-        coord = tuple(indices[:, i].tolist())
-        values[i] = tensor[coord]
-    return torch.sparse.FloatTensor(
-        indices,
-        values,
-        tensor.shape,
-    )
-
-
 def _dsmp(a, b):
     """Dense/sparse matrix product.
     """
@@ -84,6 +68,27 @@ def _dsmp(a, b):
         for i in range(a.shape[0]):
             out[i, bj] += a[i, bi] * bx
     return out
+
+
+def _sddmm(a, b, c, f):
+    """Compute `a*f(b@c)` where `a` is sparse, `b` and `c` are dense,
+    `*` is elementwise multiply, and `@` is matrix product, and `f` is a
+    scalar function.
+
+    For more on the SDDMM kernel, see:
+    http://tensor-compiler.org/docs/machine_learning/
+    """
+    outvals = torch.zeros(a._nnz())
+    for k in range(a._nnz()):
+        ai, aj = tuple(a._indices()[:, k].tolist())
+        brow = b[ai, :]
+        ccol = c[:, aj]
+        outvals[k] = a._values()[k] * f(torch.dot(brow, ccol))
+    return torch.sparse.FloatTensor(
+        a._indices(),
+        outvals,
+        a.shape,
+    )
 
 
 def swmd_torch(r, c, vecs, niters):
@@ -121,13 +126,8 @@ def swmd_torch(r, c, vecs, niters):
 
         u = 1.0 / x
 
-        K_T_times_u = K_T @ u
-        one_over_K_T_times_u = 1 / (K_T_times_u)
-
-        # PyTorch doesn't support elementwise multiply between sparse
-        # and dense matrices, so we have to convert one operand to
-        # sparse first.
-        v = c * _sparse_sample(c._indices(), one_over_K_T_times_u)
+        # Compute `c * 1/(K_T @ u)` using a hand-rolled SDDMM.
+        v = _sddmm(c, K_T, u, lambda x: 1/x)
 
         # PyTorch doesn't support dense/sparse matrix multiply (only
         # sparse/dense), so I had to write my own. :'(

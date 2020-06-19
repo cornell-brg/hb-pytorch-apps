@@ -127,7 +127,7 @@ def swmd_torch(r, c, vecs, niters):
         u = 1.0 / x
 
         # Compute `c * 1/(K_T @ u)` using a hand-rolled SDDMM.
-        v = _sddmm(c, K_T, u, lambda x: 1/x)
+        v = _sddmm(c, K_T, u, lambda x: 1 / x)
 
         # PyTorch doesn't support dense/sparse matrix multiply (only
         # sparse/dense), so I had to write my own. :'(

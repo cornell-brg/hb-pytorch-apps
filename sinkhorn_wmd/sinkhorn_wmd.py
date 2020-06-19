@@ -162,13 +162,22 @@ if __name__ == "__main__":
 
     # The kernel itself.
     if args.compare:
+        # Compare the output of the reference Numpy version and our PyTorch
+        # version to ensure the output matches.
         print('starting numpy')
         scores_numpy = swmd_numpy(r, mat, vecs,
                                   niters=args.niters)
         print('starting torch')
-        scores_torch = swmd_numpy(r, mat, vecs,
+        scores_torch = swmd_torch(r, mat, vecs,
                                   niters=args.niters)
         print('done')
+        print(scores_torch)
+        print(torch.FloatTensor(scores_numpy))
+        if torch.allclose(scores_torch, torch.FloatTensor(scores_numpy)):
+            print('success! :)')
+        else:
+            print('failure :(')
+            sys.exit(1)
     else:
         kernel = swmd_numpy if args.numpy else swmd_torch
         scores = kernel(r, mat, vecs,

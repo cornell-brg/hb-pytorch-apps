@@ -73,7 +73,7 @@ def _dsmp(a, b):
 
 def _sddmm_partial(a, b, c):
     """Only compute required entries of b@c, to be used in sddmm:
-    For all i,j with a_ij!=0, compute (b@c)_ij, where `a` is sparse, `b` and `c` 
+    For all i,j with a_ij!=0, compute (b@c)_ij, where `a` is sparse, `b` and `c`
     are dense, and `@` is matrix product. Returns a sparse matrix of (b@c)_ij.
     """
     outvals = torch.zeros(a._nnz())

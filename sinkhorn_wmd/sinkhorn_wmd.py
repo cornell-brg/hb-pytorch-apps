@@ -71,7 +71,7 @@ def _dsmp(a, b):
 
 
 
-def _sddmm_partial(a, b, c):
+def _sddmm(a, b, c):
     """Only compute required entries of b@c, to be used in sddmm:
     For all i,j with a_ij!=0, compute (b@c)_ij, where `a` is sparse, `b` and `c`
     are dense, and `@` is matrix product. Returns a sparse matrix of (b@c)_ij.
@@ -88,7 +88,7 @@ def _sddmm_partial(a, b, c):
         a.shape,
     )
 
-def _sddmm(a, b, c, f):
+def _sddmm_special(a, b, c, f):
     """Compute `a*f(b@c)` where `a` is sparse, `b` and `c` are dense,
     `*` is elementwise multiply, and `@` is matrix product, and `f` is a
     scalar function.
@@ -145,7 +145,7 @@ def swmd_torch(r, c, vecs, niters):
         u = 1.0 / x
 
         # Compute `c * 1/(K_T @ u)` using a hand-rolled SDDMM.
-        v = c * (1.0 / _sddmm_partial(c, K_T, u))
+        v = c * (1.0 / _sddmm(c, K_T, u))
 
         # PyTorch doesn't support dense/sparse matrix multiply (only
         # sparse/dense), so I had to write my own. :'(

@@ -21,7 +21,7 @@ class Block(nn.Module):
            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1,
                      padding=1, bias=False),
            nn.BatchNorm2d(out_channels),
-           nn.ReLU(inplace=True),
+           nn.ReLU(),
        )
        self.skip = None
        if residual:
@@ -41,13 +41,13 @@ class ResNet(nn.Module):
             nn.Conv2d(3, 16, kernel_size=3, stride=1,
                       padding=1, bias=False),
             nn.BatchNorm2d(16),
-            nn.ReLU(inplace=True),
+            nn.ReLU(),
             Block(16, 32),
             nn.MaxPool2d(kernel_size=(2,2), stride=2),
             Block(32, 64),
             nn.MaxPool2d(kernel_size=(2,2), stride=2),
             Block(64, 128),
-            nn.AdaptiveMaxPool2d((1, 1)), # global pooling
+            nn.MaxPool2d(kernel_size=(8,8)), # global pooling
         )
 
         self.fc = nn.Linear(128, 2)

@@ -122,6 +122,12 @@ if __name__ == "__main__":
     if args.hammerblade:
         model.to(torch.device("hammerblade"))
 
+        # Move num_batches_tracked buffer to CPU as it's int64
+        # type, independent to BatchNorm2d's computation and HB
+        # doesn't support operations on it.
+        model.move_buffers_to_cpu(torch.nn.BatchNorm2d,
+                                  ['num_batches_tracked'])
+
     print(model)
 
     # Quit here if dry run

@@ -9,6 +9,7 @@ import torch
 import torch.nn as nn
 import torchvision
 from Select_CIFAR10_Classes import get_class_i, DatasetMaker
+import torch.hammerblade.profiler as hbprof
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
@@ -147,7 +148,10 @@ if __name__ == "__main__":
 
     # Training
     if args.training:
+        hbprof.enable()
         utils.train(model, trainloader, optimizer, loss_func, args)
+        hbprof.disable()
+        print(hbprof.stats(key=['ExecTime']))
 
     # Inference
     if args.inference:

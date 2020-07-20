@@ -12,6 +12,7 @@ import numpy as np
 
 # Define a function to separate CIFAR classes by class index
 
+
 def get_class_i(x, y, i):
     """
     x: trainset.train_data or testset.test_data
@@ -24,11 +25,12 @@ def get_class_i(x, y, i):
     # Locate position of labels that equal to i
     pos_i = np.argwhere(y == i)
     # Convert the result into a 1-D list
-    pos_i = list(pos_i[:,0])
+    pos_i = list(pos_i[:, 0])
     # Collect all data that match the desired label
     x_i = [x[j] for j in pos_i]
-    
+
     return x_i
+
 
 class DatasetMaker(Dataset):
     def __init__(self, datasets, transformFunc=None):
@@ -37,8 +39,9 @@ class DatasetMaker(Dataset):
         for selected classes
         """
         self.datasets = datasets
-        self.lengths  = [len(d) for d in self.datasets]
+        self.lengths = [len(d) for d in self.datasets]
         self.transformFunc = transformFunc
+
     def __getitem__(self, i):
         class_label, index_wrt_class = self.index_of_which_bin(self.lengths, i)
         img = self.datasets[class_label][index_wrt_class]
@@ -47,7 +50,7 @@ class DatasetMaker(Dataset):
 
     def __len__(self):
         return sum(self.lengths)
-    
+
     def index_of_which_bin(self, bin_sizes, absolute_index, verbose=False):
         """
         Given the absolute index, returns which bin it falls in and which element of
@@ -57,7 +60,7 @@ class DatasetMaker(Dataset):
         accum = np.add.accumulate(bin_sizes)
         if verbose:
             print("accum =", accum)
-        bin_index  = len(np.argwhere(accum <= absolute_index))
+        bin_index = len(np.argwhere(accum <= absolute_index))
         if verbose:
             print("class_label =", bin_index)
         # Which element of the fallent class/bin does i correspond to?

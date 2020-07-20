@@ -14,25 +14,27 @@ sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
 import utils  # noqa: E402
 
-class Block(nn.Module):
-   def __init__(self, in_channels, out_channels, residual=False):
-       super().__init__()
-       self.layers = nn.Sequential(
-           nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1,
-                     padding=1, bias=False),
-           nn.BatchNorm2d(out_channels),
-           nn.ReLU(),
-       )
-       self.skip = None
-       if residual:
-           self.skip = nn.Conv2d(in_channels, out_channels, kernel_size=1,
-                                 stride=1, padding=0, bias=False)
 
-   def forward(self, xin):
-       x = self.layers(xin)
-       if self.skip:
-           x = x + self.skip(xin)
-       return x
+class Block(nn.Module):
+    def __init__(self, in_channels, out_channels, residual=False):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1,
+                      padding=1, bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(),
+        )
+        self.skip = None
+        if residual:
+            self.skip = nn.Conv2d(in_channels, out_channels, kernel_size=1,
+                                  stride=1, padding=0, bias=False)
+
+    def forward(self, xin):
+        x = self.layers(xin)
+        if self.skip:
+            x = x + self.skip(xin)
+        return x
+
 
 class ResNet(nn.Module):
     def __init__(self):
@@ -43,11 +45,11 @@ class ResNet(nn.Module):
             nn.BatchNorm2d(16),
             nn.ReLU(),
             Block(16, 32),
-            nn.MaxPool2d(kernel_size=(2,2), stride=2),
+            nn.MaxPool2d(kernel_size=(2, 2), stride=2),
             Block(32, 64),
-            nn.MaxPool2d(kernel_size=(2,2), stride=2),
+            nn.MaxPool2d(kernel_size=(2, 2), stride=2),
             Block(64, 128),
-            nn.MaxPool2d(kernel_size=(8,8)), # global pooling
+            nn.MaxPool2d(kernel_size=(8, 8)),  # global pooling
         )
 
         self.fc = nn.Linear(128, 2)
@@ -58,15 +60,17 @@ class ResNet(nn.Module):
         x = self.conv(data)
         x = x.view(x.shape[0], -1)
         x = self.fc(x)
-        x = x * 0.125 # scale layer
+        x = x * 0.125  # scale layer
         x = self.logsoftmax(x)
         return x
+
 
 def extra_arg_parser(parser):
     parser.add_argument('--lr', default=0.02, type=int,
                         help="learning rate")
     parser.add_argument('--momentum', default=0.9, type=int,
                         help="momentum")
+
 
 if __name__ == "__main__":
     # Parse arguments
@@ -96,7 +100,8 @@ if __name__ == "__main__":
     y_train = trainset.targets
     first_two_labels_trainset = \
         DatasetMaker(
-            [get_class_i(x_train, y_train, 0), get_class_i(x_train, y_train, 1)],
+            [get_class_i(x_train, y_train, 0),
+             get_class_i(x_train, y_train, 1)],
             transforms
         )
     trainloader = torch.utils.data.DataLoader(

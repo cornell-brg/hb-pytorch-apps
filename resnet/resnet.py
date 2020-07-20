@@ -105,7 +105,10 @@ if __name__ == "__main__":
             transforms
         )
     trainloader = torch.utils.data.DataLoader(
-        first_two_labels_trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
+        first_two_labels_trainset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+        num_workers=0)
 
     testset = torchvision.datasets.CIFAR10(
         root='./data', train=False, download=True, transform=transforms)
@@ -117,7 +120,10 @@ if __name__ == "__main__":
             transforms
         )
     testloader = torch.utils.data.DataLoader(
-        first_two_labels_testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
+        first_two_labels_testset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+        num_workers=0)
 
     # Load pretrained model if necessary
     if args.load_model:

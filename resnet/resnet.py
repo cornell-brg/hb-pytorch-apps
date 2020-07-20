@@ -44,11 +44,11 @@ class ResNet(nn.Module):
                       padding=1, bias=False),
             nn.BatchNorm2d(16),
             nn.ReLU(),
-            Block(16, 32),
+            Block(16, 32, True),
             nn.MaxPool2d(kernel_size=(2, 2), stride=2),
-            Block(32, 64),
+            Block(32, 64, True),
             nn.MaxPool2d(kernel_size=(2, 2), stride=2),
-            Block(64, 128),
+            Block(64, 128, True),
             nn.MaxPool2d(kernel_size=(8, 8)),  # global pooling
         )
 

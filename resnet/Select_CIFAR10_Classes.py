@@ -5,9 +5,7 @@ Implementation imported from:
 https://gist.github.com/Miladiouss/6ba0876f0e2b65d0178be7274f61ad2f
 """
 
-import torchvision
-import torchvision.transforms as transforms
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 import numpy as np
 
 # Define a function to separate CIFAR classes by class index
@@ -53,8 +51,8 @@ class DatasetMaker(Dataset):
 
     def index_of_which_bin(self, bin_sizes, absolute_index, verbose=False):
         """
-        Given the absolute index, returns which bin it falls in and which element of
-        that bin it corresponds to.
+        Given the absolute index, returns which bin it falls in and which
+        element of that bin it corresponds to.
         """
         # Which class/bin does i fall into?
         accum = np.add.accumulate(bin_sizes)

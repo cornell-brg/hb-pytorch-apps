@@ -1,10 +1,14 @@
+"""
+Utilities to select specific classes fron CIFAR-10 dataset.
+
+Implementation imported from:
+https://gist.github.com/Miladiouss/6ba0876f0e2b65d0178be7274f61ad2f
+"""
+
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
-
-# Implementation imported from:
-# https://gist.github.com/Miladiouss/6ba0876f0e2b65d0178be7274f61ad2f
 
 # Define a function to separate CIFAR classes by class index
 

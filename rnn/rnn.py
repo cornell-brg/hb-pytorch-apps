@@ -13,7 +13,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
-import numpy as np
+import numpy
 import torch
 import torch.nn as nn
 from torch.nn import init
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     # Move model to HammerBlade if using HB
     if args.hammerblade:
         model.to(torch.device("hammerblade"))
-
+        embeds.to(torch.device("hammerblade"))
 
     print(model)
 
@@ -169,11 +169,11 @@ if __name__ == "__main__":
                 inp = []
                 targets = []
                 for w in sent:
-                   inp.append(embeds(torch.tensor(word2index[w], dtype=torch.long)))
+                   inp.append(embeds(torch.tensor(word2index[w], dtype=torch.long, device="hammerblade")))
 
                 output, hidden = model(inp)
 
-                targets = torch.tensor([target for i in range(0,output.shape[0])], dtype=torch.long)
+                targets = torch.tensor([target for i in range(0,output.shape[0])], dtype=torch.long, device="hammeblade")
 
                 # back prop loss
                 loss = criterion(output, targets)

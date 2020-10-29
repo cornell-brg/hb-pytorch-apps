@@ -1,5 +1,13 @@
+import sys
+import os
 import torch
+import torch.nn as nn
 import torchvision
+
+sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
+
+import utils  # noqa: E402
+
 
 def extra_arg_parser(parser):
     parser.add_argument('--lr', default=0.02, type=int,

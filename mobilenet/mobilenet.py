@@ -25,7 +25,7 @@ if __name__ == "__main__":
     LEARNING_RATE = args.lr
     MOMENTUM = args.momentum
 
-    model =  torchvision.models.mobilenet_v2()
+    model =  torchvision.models.mobilenet_v2(10)
 
     optimizer = torch.optim.SGD(
         model.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
@@ -41,13 +41,13 @@ if __name__ == "__main__":
                                          std=[0.229, 0.224, 0.225]),
     ])
 
-    trainset = torchvision.datasets.ImageNet(
-        root='./data', split='train', transform=transforms)
+    trainset = torchvision.datasets.CIFAR10(
+        root='./data', train=True, download=True, transform=transforms)
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
 
-    testset = torchvision.datasets.ImageNet(
-        root='./data', split='test', transform=transforms)
+    testset = torchvision.datasets.CIFAR10(
+        root='./data', train=False, download=True, transform=transforms)
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
 

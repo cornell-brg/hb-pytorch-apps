@@ -34,19 +34,20 @@ if __name__ == "__main__":
 
     # Data
     transforms = torchvision.transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        torchvision.transforms.Resize(256),
+        torchvision.transforms.CenterCrop(224),
+        torchvision.transforms.ToTensor(),
+        torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225]),
     ])
 
     trainset = torchvision.datasets.ImageNet(
-        root='./data', train=True, download=True, transform=transforms)
+        root='./data', split='train', transform=transforms)
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
 
     testset = torchvision.datasets.ImageNet(
-        root='./data', train=False, download=True, transform=transforms)
+        root='./data', split='test', transform=transforms)
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
 

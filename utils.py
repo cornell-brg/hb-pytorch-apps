@@ -117,7 +117,7 @@ def train(model, loader, optimizer, loss_func, args):
             if args.verbose > 1:
                 print("outputs:")
                 print(outputs)
-            loss = loss_func(outputs, labels)
+            loss = loss_func(outputs, labels.view(-1,16))
             losses.append(loss.item())
             loss.backward()
             optimizer.step()
@@ -157,7 +157,7 @@ def inference(model, loader, loss_func, collector_func, args):
         if args.verbose > 1:
             print("outputs:")
             print(outputs)
-        loss = loss_func(outputs, labels)
+        loss = loss_func(outputs, labels.view(-1,16))
         test_loss.append(loss.item())
         collector_func(outputs, labels)
 

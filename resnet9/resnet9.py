@@ -37,24 +37,24 @@ class Resnet9Model(nn.Module):
     def __init__(self, in_channels, num_classes):
         def conv_block(in_channels, out_channels, pool=False):
             """Convolutonal Block involving Conv2D -> Batch Normalization -> ReLU -> MaxPool2D."""
-            layers = [nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1), 
-                    nn.BatchNorm2d(out_channels), 
-                    nn.ReLU(inplace=True)]
+            layers = [nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
+                    nn.BatchNorm2d(out_channels),
+                    nn.ReLU(inplace=False)]
             if pool: layers.append(nn.MaxPool2d(2))
             return nn.Sequential(*layers)
 
         super().__init__()
-        
+
         self.conv1 = conv_block(in_channels, 64)
         self.conv2 = conv_block(64, 128, pool=True)
         self.res1 = nn.Sequential(conv_block(128, 128), conv_block(128, 128))
-        
+
         self.conv3 = conv_block(128, 256, pool=True)
         self.conv4 = conv_block(256, 512, pool=True)
         self.res2 = nn.Sequential(conv_block(512, 512), conv_block(512, 512))
-        
-        self.classifier = nn.Sequential(nn.MaxPool2d(4), 
-                                        nn.Flatten(), 
+
+        self.classifier = nn.Sequential(nn.MaxPool2d(4),
+                                        nn.Flatten(),
                                         nn.Linear(512, num_classes))
 
     def forward(self, xb):
@@ -68,12 +68,26 @@ class Resnet9Model(nn.Module):
         """
 
         out = self.conv1(xb)
+        print(out.size())
+        print(out)
         out = self.conv2(out)
+        print(out.size())
+        print(out)
         out = self.res1(out) + out
+        print(out.size())
+        print(out)
         out = self.conv3(out)
+        print(out.size())
+        print(out)
         out = self.conv4(out)
+        print(out.size())
+        print(out)
         out = self.res2(out) + out
+        print(out.size())
+        print(out)
         out = self.classifier(out)
+        print(out.size())
+        print(out)
         return out
 
 # -------------------------------------------------------------------------
@@ -84,7 +98,7 @@ class Resnet9Model(nn.Module):
 def extra_arg_parser(parser):
     parser.add_argument('--lr', default=0.01, type=int,
                         help="learning rate")
-    parser.add_argument('--download', action= "store_true", default=False, 
+    parser.add_argument('--download', action= "store_true", default=False,
                         help='Download CIFAR-10 DataSet locally (stored in ./data folder)')
 
 # -------------------------------------------------------------------------
@@ -112,21 +126,21 @@ if __name__ == "__main__":
                             transforms.Normalize(*stats,inplace=True)])
     test_tfms = transforms.Compose([transforms.ToTensor(), transforms.Normalize(*stats)])
 
-    train_data = CIFAR10(root='data/', train=True, download=args.download, 
+    train_data = CIFAR10(root='data/', train=True, download=args.download,
                          transform=train_tfms)
-    test_data  = CIFAR10(root='data/', train=False, download=args.download, 
+    test_data  = CIFAR10(root='data/', train=False, download=args.download,
                          transform=test_tfms)
 
-    train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=True, 
+    train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=True,
                           num_workers=0)
-    test_loader  = DataLoader(test_data, batch_size=args.batch_size, 
+    test_loader  = DataLoader(test_data, batch_size=args.batch_size,
                           num_workers=0)
 
     # ---------------------------------------------------------------------
     # Model creation and loading
     # ---------------------------------------------------------------------
     IN_CHANNELS = 3;
-    NUM_CLASSES = 10;
+    NUM_CLASSES = 16;
     model = Resnet9Model(IN_CHANNELS, NUM_CLASSES);
 
     LEARNING_RATE = args.lr
@@ -135,16 +149,16 @@ if __name__ == "__main__":
     GRAD_CLIP = 0.1
     WEIGHT_DECAY = 1e-4
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE, 
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE,
                                  weight_decay=WEIGHT_DECAY)
-    sched = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=lr, epochs=EPOCHS, 
+    sched = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=lr, epochs=EPOCHS,
                                                 steps_per_epoch=len(train_loader))
     criterion = nn.CrossEntropyLoss()
 
     # Load pretrained model if necessary
     if args.load_model:
         model.load_state_dict(torch.load(args.model_filename))
-    
+
     # Move model to HammerBlade if using HB
     if args.hammerblade:
         model.to(torch.device("hammerblade"))
@@ -158,7 +172,7 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------
     # Training
     # ---------------------------------------------------------------------
-    
+
     if args.training:
 
         train(model,
@@ -182,7 +196,7 @@ if __name__ == "__main__":
                   criterion,
                   collector,
                   args)
-        
+
         num_correct = num_correct[0]
         test_accuracy = 100. * (num_correct / len(test_loader.dataset))
 

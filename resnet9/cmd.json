@@ -1,34 +1,34 @@
 [
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     },
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     },
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     },
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     },
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     },
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     },
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     },
     {
-        "offload": false,
+        "offload": true,
         "signature": "at::Tensor at::TypeDefault::conv2d(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, int64_t)"
     }
 ]

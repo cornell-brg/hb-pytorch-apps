@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import CIFAR10
 from utils import parse_model_args, train, inference, save_model
+import json
 
 
 # -------------------------------------------------------------------------
@@ -177,11 +178,24 @@ if __name__ == "__main__":
             pred = outputs.cpu().max(1)[1]
             num_correct[0] += pred.eq(targets.cpu().view_as(pred)).sum().item()
 
+        # Manual init of HB so we can do redispatching
+        try:
+          torch.hammerblade.init()
+        except:
+          pass
+
+        # Load kernels and instructions whether to redispatch them to HB
+        with open('cmd.json',) as f:
+            route = json.load(f)
+            torch.hammerblade.profiler.route.set_route_from_json(route)
+        
+        torch.hammerblade.profiler.enable()
         inference(model,
                   test_loader,
                   criterion,
                   collector,
                   args)
+        torch.hammerblade.profiler.disable()
         
         num_correct = num_correct[0]
         test_accuracy = 100. * (num_correct / len(test_loader.dataset))

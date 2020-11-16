@@ -68,26 +68,12 @@ class Resnet9Model(nn.Module):
         """
 
         out = self.conv1(xb)
-        print(out.size())
-        print(out)
         out = self.conv2(out)
-        print(out.size())
-        print(out)
         out = self.res1(out) + out
-        print(out.size())
-        print(out)
         out = self.conv3(out)
-        print(out.size())
-        print(out)
         out = self.conv4(out)
-        print(out.size())
-        print(out)
         out = self.res2(out) + out
-        print(out.size())
-        print(out)
         out = self.classifier(out)
-        print(out.size())
-        print(out)
         return out
 
 # -------------------------------------------------------------------------

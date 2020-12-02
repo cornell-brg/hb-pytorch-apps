@@ -157,7 +157,10 @@ def inference(model, loader, loss_func, collector_func, args):
             tqdm(enumerate(loader, 0), total=len(loader)):
         if args.hammerblade:
             data, labels = data.hammerblade(), labels.hammerblade()
+        torch.hammerblade.profiler.enable()
         outputs = model(data)
+        torch.hammerblade.profiler.disable()
+        print(torch.hammerblade.profiler.exec_time.fancy_print())
         if args.verbose > 1:
             print("outputs:")
             print(outputs)

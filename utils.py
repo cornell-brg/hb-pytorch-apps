@@ -113,14 +113,18 @@ def train(model, loader, optimizer, loss_func, args):
             if args.hammerblade:
                 data, labels = data.hammerblade(), labels.hammerblade()
             optimizer.zero_grad()
+            torch.hammerblade.profiler.enable()
             outputs = model(data)
             if args.verbose > 1:
                 print("outputs:")
                 print(outputs)
             loss = loss_func(outputs, labels)
-            losses.append(loss.item())
             loss.backward()
             optimizer.step()
+            torch.hammerblade.profiler.disable()
+            losses.append(loss.item())
+            print(torch.hammerblade.profiler.exec_time.fancy_print())
+            exit()
 
             if (args.nbatch is not None) and (batch_idx + 1 >= args.nbatch):
                 break

@@ -10,6 +10,7 @@ from torchvision.datasets import CIFAR10
 from utils import parse_model_args, train, inference, save_model
 import json
 
+PATH = "/work/global/pi57/hb-pytorch-apps/resnet9/"
 
 # -------------------------------------------------------------------------
 # ResNet-9 for CIFAR-10
@@ -113,9 +114,9 @@ if __name__ == "__main__":
                             transforms.Normalize(*stats,inplace=True)])
     test_tfms = transforms.Compose([transforms.ToTensor(), transforms.Normalize(*stats)])
 
-    train_data = CIFAR10(root='data/', train=True, download=args.download, 
+    train_data = CIFAR10(root=PATH + 'data/', train=True, download=args.download, 
                          transform=train_tfms)
-    test_data  = CIFAR10(root='data/', train=False, download=args.download, 
+    test_data  = CIFAR10(root=PATH + 'data/', train=False, download=args.download, 
                          transform=test_tfms)
 
     train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=True, 
@@ -184,8 +185,8 @@ if __name__ == "__main__":
         except:
           pass
 
-        # Load kernels and instructions whether to redispatch them to HB
-        with open('cmd.json',) as f:
+        # # Load kernels and instructions whether to redispatch them to HB
+        with open(PATH + 'cmd.json') as f:
             route = json.load(f)
             torch.hammerblade.profiler.route.set_route_from_json(route)
         

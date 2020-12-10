@@ -37,7 +37,7 @@ class Resnet9Model(nn.Module):
     def __init__(self, in_channels, num_classes):
         def conv_block(in_channels, out_channels, pool=False):
             """Convolutonal Block involving Conv2D -> Batch Normalization -> ReLU -> MaxPool2D."""
-            layers = [nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
+            layers = [nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, bias=False),
                     nn.BatchNorm2d(out_channels),
                     nn.ReLU(inplace=False)]
             if pool: layers.append(nn.MaxPool2d(2))

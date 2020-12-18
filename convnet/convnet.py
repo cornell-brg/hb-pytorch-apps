@@ -1,5 +1,6 @@
 """
-ResNet workload
+Convnet DARPA Workload: https://github.com/prog-eval/prog-eval/tree/master/convnet
+Implements simplified ResNet (i.e. 5 layers)
 07/17/2020 Bandhav Veluri
 """
 

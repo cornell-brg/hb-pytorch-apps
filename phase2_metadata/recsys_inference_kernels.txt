@@ -1,0 +1,14 @@
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::addmm(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar, c10::Scalar) : 3308060.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::embedding(const at::Tensor&, const at::Tensor&, int64_t, bool, bool) : 97771.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&) : 3834.0)
+
+  |- Node(at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool) : 2891.0)
+
+  |- Node(at::Tensor at::TypeDefault::dropout(const at::Tensor&, double, bool) : 38.0)
+
+  |- Node(at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>) : 59292.0)
+
+  |- Node(at::Tensor at::TypeDefault::t(const at::Tensor&) : 171.0)

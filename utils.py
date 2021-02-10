@@ -156,6 +156,7 @@ def inference(model, loader, loss_func, collector_func, args):
         if args.hammerblade:
             data, labels = data.hammerblade(), labels.hammerblade()
         # ROI
+        torch.hammerblade.profiler.enable()
         outputs = model(data)
         # End of ROI
         torch.hammerblade.profiler.disable()

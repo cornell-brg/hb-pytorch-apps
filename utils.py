@@ -121,7 +121,8 @@ def train(model, loader, optimizer, loss_func, args):
             optimizer.step()
             # End of ROI
             torch.hammerblade.profiler.disable()
-            print(torch.hammerblade.profiler.exec_time.raw_stack())
+            # print(torch.hammerblade.profiler.exec_time.raw_stack())
+            # print(torch.hammerblade.profiler.chart.json())
             losses.append(loss.item())
 
             if (args.nbatch is not None) and (batch_idx + 1 >= args.nbatch):
@@ -160,7 +161,8 @@ def inference(model, loader, loss_func, collector_func, args):
         outputs = model(data)
         # End of ROI
         torch.hammerblade.profiler.disable()
-        print(torch.hammerblade.profiler.exec_time.raw_stack())
+        # print(torch.hammerblade.profiler.exec_time.raw_stack())
+        # print(torch.hammerblade.profiler.chart.json())
         loss = loss_func(outputs, labels)
         test_loss.append(loss.item())
         collector_func(outputs, labels)

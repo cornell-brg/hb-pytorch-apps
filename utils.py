@@ -155,10 +155,11 @@ def inference(model, loader, loss_func, collector_func, args):
             tqdm(enumerate(loader, 0), total=len(loader)):
         if args.hammerblade:
             data, labels = data.hammerblade(), labels.hammerblade()
+        # ROI
         outputs = model(data)
-        if args.verbose > 1:
-            print("outputs:")
-            print(outputs)
+        # End of ROI
+        torch.hammerblade.profiler.disable()
+        print(torch.hammerblade.profiler.exec_time.raw_stack())
         loss = loss_func(outputs, labels)
         test_loss.append(loss.item())
         collector_func(outputs, labels)

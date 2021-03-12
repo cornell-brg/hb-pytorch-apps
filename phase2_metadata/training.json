@@ -5,10 +5,6 @@
     },
     {
         "offload": false,
-        "signature": "at::Tensor at::CPUType::{anonymous}::embedding(const at::Tensor&, const at::Tensor&, int64_t, bool, bool)"
-    },
-    {
-        "offload": false,
         "signature": "at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)"
     },
     {
@@ -18,10 +14,6 @@
     {
         "offload": false,
         "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
-    },
-    {
-        "offload": false,
-        "signature": "at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)"
     },
     {
         "offload": false,
@@ -42,10 +34,6 @@
     {
         "offload": false,
         "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
-    },
-    {
-        "offload": false,
-        "signature": "at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)"
     },
     {
         "offload": false,
@@ -109,10 +97,6 @@
     },
     {
         "offload": false,
-        "signature": "std::tuple<at::Tensor, at::Tensor, at::Tensor> at::CPUType::{anonymous}::native_batch_norm_backward(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, std::array<bool, 3>)"
-    },
-    {
-        "offload": false,
         "signature": "at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar)"
     },
     {
@@ -153,10 +137,6 @@
     },
     {
         "offload": false,
-        "signature": "std::tuple<at::Tensor, at::Tensor, at::Tensor> at::CPUType::{anonymous}::native_batch_norm_backward(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, std::array<bool, 3>)"
-    },
-    {
-        "offload": false,
         "signature": "at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar)"
     },
     {
@@ -166,10 +146,6 @@
     {
         "offload": false,
         "signature": "at::Tensor at::TypeDefault::expand(const at::Tensor&, c10::IntArrayRef, bool)"
-    },
-    {
-        "offload": false,
-        "signature": "at::Tensor at::TypeDefault::embedding_backward(const at::Tensor&, const at::Tensor&, int64_t, int64_t, bool, bool)"
     },
     {
         "offload": false,

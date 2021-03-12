@@ -67,11 +67,9 @@ torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::t(const at::Te
 """
 
 # Training re-dispatch
-"""
 with open('training.json',) as f:
   route = json.load(f)
   torch.hammerblade.profiler.route.set_route_from_json(route)
-"""
 
 # Inference re-dispatch
 """

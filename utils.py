@@ -11,6 +11,7 @@ import time
 import torch
 from tqdm import tqdm
 
+# torch.hammerblade.init()
 
 def parse_model_args(workload_args=None):
     """
@@ -123,7 +124,7 @@ def train(model, loader, optimizer, loss_func, args):
             optimizer.step()
             torch.hammerblade.profiler.disable()
             losses.append(loss.item())
-            print(torch.hammerblade.profiler.exec_time.fancy_print())
+            print(torch.hammerblade.profiler.exec_time.fancy_print(True))
             exit()
 
             if (args.nbatch is not None) and (batch_idx + 1 >= args.nbatch):

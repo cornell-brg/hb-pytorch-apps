@@ -9,6 +9,11 @@ from torchvision import transforms
 from torchvision.datasets import CIFAR10
 from utils import parse_model_args, train, inference, save_model
 
+# import json
+# with open('cmd.json',) as f:
+#   route = json.load(f)
+#   torch.hammerblade.profiler.route.set_route_from_json(route)
+#   print(json.dumps(route, indent=4))
 
 # -------------------------------------------------------------------------
 # ResNet-9 for CIFAR-10

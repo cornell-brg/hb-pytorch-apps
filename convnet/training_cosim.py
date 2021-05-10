@@ -115,7 +115,7 @@ def train_one_epoch(model, opt, dataloader, lr, num_epochs, hammerblade):
 
         with open('training_kernel.json',) as f:
             route = json.load(f)
-            torch.hammerblade.profiler.route.set_route_from.json(route)
+            torch.hammerblade.profiler.route.set_route_from_json(route)
 
         torch.hammerblade.profiler.enable()
 

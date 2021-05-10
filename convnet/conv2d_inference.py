@@ -7,7 +7,7 @@ parser.add_argument('--channels', type=int, help="Number of input channels for c
 parser.add_argument('--filters', type=int, help="Number of kernel channels for conv2d.")
 parser.add_argument('--image-dim', type=int, help="Size of inputs to be processed for conv2d. Square image.")
 parser.add_argument('--kernel-size', type=int, help="Size of kernel for conv2d.")
-parser.add_argument('--padding', action="store_ture")
+parser.add_argument('--padding', action="store_true")
 args = parser.parse_args()
 
 batch_size = args.batch_size

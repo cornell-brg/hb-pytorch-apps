@@ -10,6 +10,29 @@ There are many blog posts and tutorials that give background on CNNs applied to 
  - [Keras tutorial](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
  - [Pytorch tutorial](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html)
 
+### How to Run Workload
+
+- __Step1:__ Build [hb-pytorch](https://github.com/cornell-brg/hb-pytorch/tree/convnet) [Use Branch convnet].
+
+- __Step2:__ Run training kernels profiling:
+
+       python run-all-hb-training.py
+
+
+- __Step3:__ Run inference kernels profiling:
+
+       python run-all-hb-inference.py
+
+
+- __Step4:__ Run Conv2d kernels profiling:
+
+       python run-all-hb-conv2d.py
+
+### How to Parse Results
+
+TODO
+
+
 ### Algorithm Overview
 
 These days, CNNs are almost always trained on a graphics processing unit (GPU) instead of the CPU.  GPU training is roughly 10x faster than CPU training.  Since we're not assuming you have access to a GPU for this exercise, we'll be training a relatively small CNN on a small dataset (10k 32x32 images).  A state of the art CNN would be far larger (more parameters) and would be trained on far more data (eg, 1Ms of 224x224 images).

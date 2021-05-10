@@ -14,17 +14,21 @@ There are many blog posts and tutorials that give background on CNNs applied to 
 
 - __Step1:__ Build [hb-pytorch](https://github.com/cornell-brg/hb-pytorch/tree/convnet) [Use Branch convnet].
 
-- __Step2:__ Run training kernels profiling:
+- __Step2:__ Download CIFAR dataset with:
+
+       sh prep.sh
+
+- __Step3:__ Run training kernels profiling:
 
        python run-all-hb-training.py
 
 
-- __Step3:__ Run inference kernels profiling:
+- __Step4:__ Run inference kernels profiling:
 
        python run-all-hb-inference.py
 
 
-- __Step4:__ Run Conv2d kernels profiling:
+- __Step5:__ Run Conv2d kernels profiling:
 
        python run-all-hb-conv2d.py
 

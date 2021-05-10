@@ -57,7 +57,7 @@ class Block(nn.Module):
 
         self.layers = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(affine=False, track_running_stats=False),
+            nn.BatchNorm2d(out_channels, affine=False, track_running_stats=False),
             nn.ReLU(),
         )
 
@@ -111,6 +111,12 @@ def train_one_epoch(model, opt, dataloader, lr, num_epochs, hammerblade):
     for i, (x, y) in enumerate(tqdm(dataloader)):
         if hammerblade: x, y = x.hammerblade(), y.hammerblade()
 
+        with open('training_kernel.json',) as f:
+            route = json.load(f)
+            torch.hammerblade.profiler.route.set_route_from.json(route)
+
+        torch.hammerblade.profiler.enable()
+
         progress = (epoch + i / len(dataloader)) / num_epochs
         set_lr(opt, lr * (1 - progress))
 
@@ -119,7 +125,9 @@ def train_one_epoch(model, opt, dataloader, lr, num_epochs, hammerblade):
         loss = F.cross_entropy(out, y)
         loss.backward()
         opt.step()
-        break # only train one iteration
+
+        torch.hammerblade.profiler.disable()
+        exit() # only profile one iteration
 
     return model
 
@@ -132,7 +140,6 @@ def predict(model, dataloader, hammerblade):
 
         out   = model(x)
         preds.append(out.argmax(dim=-1).detach().cpu().numpy())
-        break # only predict one iteration
 
     return np.hstack(preds)
 
@@ -189,22 +196,12 @@ if __name__ == "__main__":
     t = time()
     for epoch in range(args.num_epochs):
 
-        with open('training_kernel.json',) as f:
-            route = json.load(f)
-            torch.hammerblade.profiler.route.set_route_from.json(route)
-
-        torch.hammerblade.profiler.enable()
         # Train
         model = train_one_epoch(model, opt, train_dataloader,
             lr=args.lr, num_epochs=args.num_epochs, hammerblade=args.hammerblade)
-        torch.hammerblade.profiler.disable()
 
         # Evaluate
         preds = predict(model, test_dataloader, hammerblade=args.hammerblade)
-        fw.write(torch.hammerblade.profiler.exec_time.raw_stack())
-        fw.close()
 
-
-        break # only process one epoch
 
 print("convnet Training Cosim is Done!")

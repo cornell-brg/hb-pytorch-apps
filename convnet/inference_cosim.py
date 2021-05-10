@@ -130,6 +130,7 @@ def predict(model, dataloader, hammerblade):
     for x, y in dataloader:
         if hammerblade: x, y = x.hammerblade(), y.hammerblade()
 
+        torch._C._hb_profiler_route_enable_allclose_check()
         with open('inference_kernel.json',) as f:
             route = json.load(f)
             torch.hammerblade.profiler.route.set_route_from.json(route)

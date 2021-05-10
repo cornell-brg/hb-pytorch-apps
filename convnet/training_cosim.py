@@ -111,6 +111,8 @@ def train_one_epoch(model, opt, dataloader, lr, num_epochs, hammerblade):
     for i, (x, y) in enumerate(tqdm(dataloader)):
         if hammerblade: x, y = x.hammerblade(), y.hammerblade()
 
+        torch._C._hb_profiler_route_enable_allclose_check()
+
         with open('training_kernel.json',) as f:
             route = json.load(f)
             torch.hammerblade.profiler.route.set_route_from.json(route)

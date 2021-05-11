@@ -1,0 +1,82 @@
+[
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::max_pool2d(const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::max_pool2d(const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::max_pool2d(const at::Tensor&, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, c10::IntArrayRef, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::view(const at::Tensor&, c10::IntArrayRef)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::t(const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::matmul(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mul(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::argmax(const at::Tensor&, c10::optional<long int>, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::to(const at::Tensor&, const c10::TensorOptions&, bool, bool, c10::optional<c10::MemoryFormat>)"
+    }
+]

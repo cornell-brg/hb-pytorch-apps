@@ -112,15 +112,18 @@ def train(model, loader, optimizer, loss_func, args):
                 tqdm(enumerate(loader, 0), total=len(loader)):
             if args.hammerblade:
                 data, labels = data.hammerblade(), labels.hammerblade()
+            # ROI
+            torch.hammerblade.profiler.enable()
             optimizer.zero_grad()
             outputs = model(data)
-            if args.verbose > 1:
-                print("outputs:")
-                print(outputs)
             loss = loss_func(outputs, labels)
-            losses.append(loss.item())
             loss.backward()
             optimizer.step()
+            # End of ROI
+            torch.hammerblade.profiler.disable()
+            # print(torch.hammerblade.profiler.exec_time.raw_stack())
+            # print(torch.hammerblade.profiler.chart.json())
+            losses.append(loss.item())
 
             if (args.nbatch is not None) and (batch_idx + 1 >= args.nbatch):
                 break
@@ -153,10 +156,13 @@ def inference(model, loader, loss_func, collector_func, args):
             tqdm(enumerate(loader, 0), total=len(loader)):
         if args.hammerblade:
             data, labels = data.hammerblade(), labels.hammerblade()
+        # ROI
+        torch.hammerblade.profiler.enable()
         outputs = model(data)
-        if args.verbose > 1:
-            print("outputs:")
-            print(outputs)
+        # End of ROI
+        torch.hammerblade.profiler.disable()
+        # print(torch.hammerblade.profiler.exec_time.raw_stack())
+        # print(torch.hammerblade.profiler.chart.json())
         loss = loss_func(outputs, labels)
         test_loss.append(loss.item())
         collector_func(outputs, labels)

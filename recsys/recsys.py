@@ -19,6 +19,69 @@ import numpy as np
 from utils import parse_model_args, train, inference, save_model
 
 # -------------------------------------------------------------------------
+# Phase2 evaluation related commands
+# -------------------------------------------------------------------------
+import json
+torch.hammerblade.init()
+
+# Training phase chart
+"""
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::addmm(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar, c10::Scalar)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::div(const at::Tensor&, const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::embedding(const at::Tensor&, const at::Tensor&, int64_t, bool, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::mul(const at::Tensor&, const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::view(const at::Tensor&, c10::IntArrayRef)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::binary_cross_entropy_with_logits(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, int64_t)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::binary_cross_entropy_with_logits_backward(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, int64_t)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::dropout(const at::Tensor&, double, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::embedding_backward(const at::Tensor&, const at::Tensor&, int64_t, int64_t, bool, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::expand(const at::Tensor&, c10::IntArrayRef, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::ones_like(const at::Tensor&, const c10::TensorOptions&, c10::optional<c10::MemoryFormat>)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::sqrt(const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::t(const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::unsqueeze(const at::Tensor&, int64_t)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::zeros_like(const at::Tensor&, const c10::TensorOptions&, c10::optional<c10::MemoryFormat>)")
+torch.hammerblade.profiler.chart.add("at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)")
+torch.hammerblade.profiler.chart.add("at::Tensor& at::CPUType::{anonymous}::mul_(at::Tensor&, const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor& at::TypeDefault::addcdiv_(at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar)")
+torch.hammerblade.profiler.chart.add("at::Tensor& at::TypeDefault::addcmul_(at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar)")
+torch.hammerblade.profiler.chart.add("int64_t at::TypeDefault::size(const at::Tensor&, int64_t)")
+torch.hammerblade.profiler.chart.add("std::tuple<at::Tensor, at::Tensor, at::Tensor> at::CPUType::{anonymous}::native_batch_norm_backward(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, std::array<bool, 3>)")
+"""
+
+# Inference phase chart
+"""
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::addmm(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar, c10::Scalar)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::embedding(const at::Tensor&, const at::Tensor&, int64_t, bool, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::dropout(const at::Tensor&, double, bool)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)")
+torch.hammerblade.profiler.chart.add("at::Tensor at::TypeDefault::t(const at::Tensor&)")
+"""
+
+# Training re-dispatch
+"""
+with open('training.json',) as f:
+  route = json.load(f)
+  torch.hammerblade.profiler.route.set_route_from_json(route)
+"""
+
+# Inference re-dispatch
+"""
+with open('inference.json',) as f:
+  route = json.load(f)
+  torch.hammerblade.profiler.route.set_route_from_json(route)
+"""
+
+
+# -------------------------------------------------------------------------
 # Parse command line arguments
 # -------------------------------------------------------------------------
 

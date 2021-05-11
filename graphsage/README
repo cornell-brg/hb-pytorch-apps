@@ -1,4 +1,4 @@
-### This folder includes the GraphSAGE PyTorch implementation to re-produce the profiling result:
+# GraphSAGE
 
 ## Getting the runtime profiling for CPU and HB Host
 

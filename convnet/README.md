@@ -34,7 +34,9 @@ There are many blog posts and tutorials that give background on CNNs applied to 
 
 ### How to Parse Results
 
-TODO
+Once all training kernels, inference kernels, and conv2d kernels are profiled, run following instruction to generate readable profiling results for each kernel:
+       
+    python parse_results.py --bladerunner-dir [BladeRunner Dir]
 
 
 ### Algorithm Overview

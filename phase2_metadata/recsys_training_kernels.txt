@@ -1,0 +1,53 @@
+  |- Node(at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar) : 3123.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::addmm(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar, c10::Scalar) : 4331989.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::div(const at::Tensor&, const at::Tensor&) : 227504.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::embedding(const at::Tensor&, const at::Tensor&, int64_t, bool, bool) : 111861.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&) : 9006894.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::mul(const at::Tensor&, const at::Tensor&) : 10091.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&) : 13279.0)
+
+  |- Node(at::Tensor at::CPUType::{anonymous}::view(const at::Tensor&, c10::IntArrayRef) : 351.0)
+
+  |- Node(at::Tensor at::TypeDefault::batch_norm(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, double, bool) : 55970.0)
+
+  |- Node(at::Tensor at::TypeDefault::binary_cross_entropy_with_logits(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, int64_t) : 851112.0)
+
+  |- Node(at::Tensor at::TypeDefault::binary_cross_entropy_with_logits_backward(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, int64_t) : 272200.0)
+
+  |- Node(at::Tensor at::TypeDefault::dropout(const at::Tensor&, double, bool) : 60662.0)
+
+  |- Node(at::Tensor at::TypeDefault::embedding_backward(const at::Tensor&, const at::Tensor&, int64_t, int64_t, bool, bool) : 117268.0)
+
+  |- Node(at::Tensor at::TypeDefault::expand(const at::Tensor&, c10::IntArrayRef, bool) : 89.0)
+
+  |- Node(at::Tensor at::TypeDefault::ones_like(const at::Tensor&, const c10::TensorOptions&, c10::optional<c10::MemoryFormat>) : 1032.0)
+
+  |- Node(at::Tensor at::TypeDefault::sqrt(const at::Tensor&) : 158859.0)
+
+  |- Node(at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>) : 89507.0)
+
+  |- Node(at::Tensor at::TypeDefault::t(const at::Tensor&) : 1967.0)
+
+  |- Node(at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar) : 11507.0)
+
+  |- Node(at::Tensor at::TypeDefault::unsqueeze(const at::Tensor&, int64_t) : 102.0)
+
+  |- Node(at::Tensor at::TypeDefault::zeros_like(const at::Tensor&, const c10::TensorOptions&, c10::optional<c10::MemoryFormat>) : 234129.0)
+
+  |- Node(at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar) : 388840.0)
+
+  |- Node(at::Tensor& at::CPUType::{anonymous}::mul_(at::Tensor&, const at::Tensor&) : 417507.0)
+
+  |- Node(at::Tensor& at::TypeDefault::addcdiv_(at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar) : 201140.0)
+
+  |- Node(at::Tensor& at::TypeDefault::addcmul_(at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar) : 241617.0)
+
+  |- Node(int64_t at::TypeDefault::size(const at::Tensor&, int64_t) : 23.0)
+
+  |- Node(std::tuple<at::Tensor, at::Tensor, at::Tensor> at::CPUType::{anonymous}::native_batch_norm_backward(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, bool, double, std::array<bool, 3>) : 38952.0)

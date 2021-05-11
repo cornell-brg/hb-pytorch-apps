@@ -27,7 +27,7 @@ for i in range(len(route)):
     print()
 
     # create kernel folder
-    name = "graphsage_hb_training_%d" % i
+    name = "graphsage_training_%d" % i
     sh_cmd = "mkdir -p " + name
     print(sh_cmd)
     os.system(sh_cmd)
@@ -36,7 +36,7 @@ for i in range(len(route)):
     with open(name + "/training.json", 'w') as outfile:
         json.dump(cmd, outfile, indent=4, sort_keys=True)
 
-    sh_cmd = "ln -s /home/zz546/sdh-prog-eval/opt_graphsage/data " + name + "/data"
+    sh_cmd = "ln -s /home/zz546/hb-pytorch-apps/graphsage/data " + name + "/data"
     print(sh_cmd)
     os.system(sh_cmd)
 

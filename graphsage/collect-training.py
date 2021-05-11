@@ -14,7 +14,7 @@ device_dict = {}
 for i in range(len(route)):
   aten = route[i]['signature']
   print(aten)
-  name = "graphsage_hb_%d" % i
+  name = "graphsage_training_%d" % i
   data = subprocess.check_output(['grep', 'finished --', name+'/out.std'])
   data = data.decode("utf-8").splitlines()
   print(data)

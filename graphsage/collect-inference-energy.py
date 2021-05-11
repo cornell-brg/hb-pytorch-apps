@@ -24,7 +24,7 @@ default = { 'FP ALU': 0,
   'scratchpad': 0}
 default = json.loads(str(default).replace("'","\""))
 
-with open('training.json',) as f:
+with open('inference.json',) as f:
   route = json.load(f)
 
 parser = argparse.ArgumentParser()
@@ -35,7 +35,7 @@ args = parser.parse_args()
 def collect_power(i):
   aten = route[i]['signature']
   print(aten)
-  name = "graphsage_training_saif_%d" % i
+  name = "graphsage_inference_saif_%d" % i
   func = aten
   func = func.split("(")[0]
   func = func.split("::")[-1]

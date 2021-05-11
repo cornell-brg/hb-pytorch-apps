@@ -5,11 +5,8 @@
 1. [Install HB PyTorch](https://github.com/cornell-brg/hb-pytorch/tree/pytorch-sparse-workload) for custom backend kernels. Currently, the sinkhorn-app kernels are supported in the `pytorch-sparse-workload` branch. Build Pytorch in cosim mode with the help of instructions.
 Note: Redispatch should be turned on (by default) in `hb-pytorch/CMakeLists.txt`: `HB_REDISPATCH "Enable conditional redispatch to HB" ON`
 2. Download Sinkhorn data. The data currently resides [here](https://cornell.box.com/s/5m6uowgjn8mr5ofdu6hrj62psbm3ztce). You'll need access to Cornell Box.
-3. Run using Makefile:
-```
-make
-```
-To use multi-threading for parallel simulation of kernels do: `make -j16` for 16 threads. To avoid running energy evaluations using `pycosim.saif`, remove `$(ALL_SAIF)` from dependency from the first rule.
+3. Run using Makefile - `make`. To use multi-threading for parallel simulation of kernels do: `make -j16` for 16 threads. 
+To avoid running energy evaluations using `pycosim.saif`, remove `$(ALL_SAIF)` from dependency from the first rule.
 Note: Only 1/16 of the workload is run on cosim (1 POD) for weak-scaling to 16 pods. This parameter is given by `HB_DATA_FRAC` set to `16` in both `test_sinkhorn.py` and `test_cdist.py`.
 4. To collect performance results and calculate rough energy numbers:
 ```

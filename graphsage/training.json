@@ -1,0 +1,239 @@
+[
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::index(const at::Tensor&, at::TensorList)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::to(const at::Tensor&, c10::ScalarType, bool, bool, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::index(const at::Tensor&, at::TensorList)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::to(const at::Tensor&, c10::ScalarType, bool, bool, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::embedding(const at::Tensor&, const at::Tensor&, int64_t, bool, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::matmul(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::relu_(at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::embedding(const at::Tensor&, const at::Tensor&, int64_t, bool, bool)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::matmul(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::relu_(at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::cat(at::TensorList, int64_t)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::matmul(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::addmm(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::relu(const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::addmm(const at::Tensor&, const at::Tensor&, const at::Tensor&, c10::Scalar, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::l1_loss(const at::Tensor&, const at::Tensor&, int64_t)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::ones_like(const at::Tensor&, const c10::TensorOptions&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::l1_loss_backward(const at::Tensor&, const at::Tensor&, const at::Tensor&, int64_t)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::sum(const at::Tensor&, c10::IntArrayRef, bool, c10::optional<c10::ScalarType>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::TypeDefault::threshold_backward(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::mm(const at::Tensor&, const at::Tensor&)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::clone(const at::Tensor&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::clone(const at::Tensor&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::clone(const at::Tensor&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::clone(const at::Tensor&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::clone(const at::Tensor&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::clone(const at::Tensor&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::clone(const at::Tensor&, c10::optional<c10::MemoryFormat>)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor at::CPUType::{anonymous}::add(const at::Tensor&, const at::Tensor&, c10::Scalar)"
+    },
+    {
+        "offload": false,
+        "signature": "at::Tensor& at::CPUType::{anonymous}::add_(at::Tensor&, const at::Tensor&, c10::Scalar)"
+    }
+]
+

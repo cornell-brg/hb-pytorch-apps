@@ -15,10 +15,12 @@ There are many blog posts and tutorials that give background on CNNs applied to 
 - __Step1:__ Build [hb-pytorch](https://github.com/cornell-brg/hb-pytorch/tree/convnet) [Use Branch convnet].
 
        git clone -b convnet git@github.com:cornell-brg/hb-pytorch.git
+       cd hb-pytorch
        python3.6 -m venv ./venv_pytorch
+       source venv_pytorch/bin/activate
        pip install numpy pyyaml mkl mkl-include setuptools cmake cffi typing sklearn tqdm pytest ninja hypothesis thop
        git submodule update --init --recursive
-       cd hb-pytorch && source setup_cosim_build_env.sh [provide bladerunner dir in the setup_cosim_build_env.sh + change the machine if necessary]
+       source setup_cosim_build_env.sh [provide bladerunner dir in the setup_cosim_build_env.sh + change the machine if necessary]
        python setup.py install
 
 - __Step2:__ Download CIFAR dataset with:

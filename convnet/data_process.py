@@ -16,10 +16,10 @@ def collect_data(filename):
     fops = 0
     total_ops = 0
     with open(filename,) as f:
-        for lines in f:
-            if lines[:6] == "kernel":
+        for num, lines in enumerate(f, 1):
+            if lines[:6] == "kernel" or lines[0] in ["4", "5", "6"] and num < 7:
                 seg = lines.split()
-                total_cycle = int(seg[6])
+                total_cycle += int(seg[6])
             elif lines[:7] == "instr_f" and lines[7:9] != 'ct' and lines[7:9] != 'mv' and lines[7:9] != 'sg':
                 seg = lines.split()
                 count = int(seg[1])
@@ -163,9 +163,9 @@ for i in conv_layer:
     convnet_ops_tr += ops
     convnet_fops_tr += fops
 
-    cycle = cycle if i > 0 else cycle - kernel_info_Pr["conv2d"].cycle
-    ops = ops if i > 0 else ops - kernel_info_Pr["conv2d"].ops
-    fops = fops if i > 0 else fops - kernel_info_Pr["conv2d"].fops
+    cycle = cycle if i != "0" else cycle - kernel_info_pr["conv2d"].cycle
+    ops = ops if i != "0" else ops - kernel_info_pr["conv2d"].ops
+    fops = fops if i != "0" else fops - kernel_info_pr["conv2d"].fops
 
     add_data(kernel_info_tr, "conv2d_backward", cycle, ops, fops)
     add_data(layer_info_tr, "Conv_back-Tr", cycle, ops, fops)
@@ -190,27 +190,27 @@ print("Total GFlops of ConvNet (1GHz) = {}\n".format(float(convnet_fops)/(float(
 print("Total GFlops of ConvNet (2GHz) = {}\n".format(float(convnet_fops)/(float(convnet_cycle)/freq/2)*pod_num / 1e9))
 
 print("===============================Training Kernel Info=====================================\n")
-print("Kernel\tCycles\tFlop Ratio\t FOPS\n")
+print("Kernel\t\tCycles\t\tFlop Ratio\t\tFOPS\n")
 for kernel in kernel_info_tr.keys():
-    print("{}\t{}\t{}\t{}\n".format(kernel, kernel_info_tr[kernel].cycle, float(kernel_info_tr[kernel].fops)/kernel_info_tr[kernel].ops, kernel_info_tr[kernel].fops))
+    print("{}\t\t{}\t\t{}\t\t{}\n".format(kernel, kernel_info_tr[kernel].cycle, float(kernel_info_tr[kernel].fops)/kernel_info_tr[kernel].ops, kernel_info_tr[kernel].fops))
 print("===========================================================\n")
 
 
 print("===============================Inference Kernel Info=====================================\n")
-print("Kernel\tCycles\tFlop Ratio\t FOPS\n")
+print("Kernel\t\tCycles\t\tFlop Ratio\t\tFOPS\n")
 for kernel in kernel_info_pr.keys():
-    print("{}\t{}\t{}\t{}\n".format(kernel, kernel_info_pr[kernel].cycle, float(kernel_info_pr[kernel].fops)/kernel_info_pr[kernel].ops, kernel_info_pr[kernel].fops))
+    print("{}\t\t{}\t\t{}\t\t{}\n".format(kernel, kernel_info_pr[kernel].cycle, float(kernel_info_pr[kernel].fops)/kernel_info_pr[kernel].ops, kernel_info_pr[kernel].fops))
 print("===========================================================\n")
 
 print("===============================Training Layer Info=====================================\n")
-print("Layer\tCycles\tFlop Ratio\t FOPS\n")
+print("Layer\t\tCycles\t\tFlop Ratio\t\tFOPS\n")
 for layer in layer_info_tr.keys():
-    print("{}\t{}\t{}\t{}\n".format(layer, layer_info_tr[layer].cycle, float(layer_info_tr[layer].fops)/layer_info_tr[layer].ops, layer_info_tr[layer].fops))
+    print("{}\t\t{}\t\t{}\t\t{}\n".format(layer, layer_info_tr[layer].cycle, float(layer_info_tr[layer].fops)/layer_info_tr[layer].ops, layer_info_tr[layer].fops))
 print("===========================================================\n")
 
 print("===============================Inference Layer Info=====================================\n")
-print("Layer\tCycles\tFlop Ratio\t FOPS\n")
+print("Layer\t\tCycles\t\tFlop Ratio\t\tFOPS\n")
 for layer in layer_info_pr.keys():
-    print("{}\t{}\t{}\t{}\n".format(layer, layer_info_pr[layer].cycle, float(layer_info_pr[layer].fops)/layer_info_pr[layer].ops, layer_info_pr[layer].fops))
+    print("{}\t\t{}\t\t{}\t\t{}\n".format(layer, layer_info_pr[layer].cycle, float(layer_info_pr[layer].fops)/layer_info_pr[layer].ops, layer_info_pr[layer].fops))
 print("===========================================================\n")
 

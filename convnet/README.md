@@ -18,7 +18,7 @@ There are many blog posts and tutorials that give background on CNNs applied to 
        cd hb-pytorch
        python3.6 -m venv ./venv_pytorch
        source venv_pytorch/bin/activate
-       pip install numpy pyyaml mkl mkl-include setuptools cmake cffi typing sklearn tqdm pytest ninja hypothesis thop
+       pip install numpy pyyaml mkl mkl-include setuptools cmake cffi typing sklearn tqdm pytest ninja hypothesis thop pandas tabulate
        git submodule update --init --recursive
        source setup_cosim_build_env.sh [provide bladerunner dir in the setup_cosim_build_env.sh + change the machine if necessary]
        python setup.py install

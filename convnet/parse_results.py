@@ -3,9 +3,11 @@ import os
 import json
 import copy
 import subprocess
+import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--bladerunner-dir', type=str)
+args = parser.parse_args()
 BLADERUNNER_DIR = args.bladerunner_dir
 
 # ======================================================
@@ -15,8 +17,6 @@ BLADERUNNER_DIR = args.bladerunner_dir
 with open('training_kernel.json',) as f:
   route1 = json.load(f)
 
-fancy_print(route1)
-print()
 
 print("total number of jobs: " + str(len(route1)))
 
@@ -37,9 +37,6 @@ for i in range(len(route1)):
 
 with open('inference_kernel.json',) as f:
   route2 = json.load(f)
-
-fancy_print(route2)
-print()
 
 print("total number of jobs: " + str(len(route2)))
 
